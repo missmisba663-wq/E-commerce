@@ -1,0 +1,16 @@
+{
+  "name": "fernleaf",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fernleaf: a full-stack plant shop (React, Express, MongoDB) with an automated test suite and CI/CD",
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "demo": "npm run demo --prefix server",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "seed": "npm run seed --prefix server",
+    "test": "npm test --prefix server && npm test --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "npm start --prefix server"
+  }
+}

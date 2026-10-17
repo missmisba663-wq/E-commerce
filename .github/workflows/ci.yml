@@ -1,0 +1,106 @@
+name: CI/CD
+
+# Every push and pull request runs the full test suite.
+# A push to main that passes is then deployed automatically. Nothing ships unless the tests pass.
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+# If you push twice in quick succession, the older run is cancelled.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  server:
+    name: API tests (unit, integration, API)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      # mongodb-memory-server downloads a MongoDB binary. Caching it saves about 30s per run.
+      - name: Cache MongoDB binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binaries-${{ runner.os }}-${{ hashFiles('server/package-lock.json') }}
+
+      - run: npm ci
+      - run: npm run test:unit
+      - run: npm run test:integration
+      - run: npm run test:api
+      - name: Coverage report
+        run: npm run test:coverage -- --coverageReporters=text-summary --coverageReporters=lcov
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: server-coverage
+          path: server/coverage/lcov-report
+          retention-days: 7
+
+  client:
+    name: UI tests and build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+  deploy:
+    name: Deploy to production
+    needs: [server, client]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Trigger Render deploy
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "::error::RENDER_DEPLOY_HOOK_URL secret is not set. See README > Deployment."
+            exit 1
+          fi
+          curl --fail --silent --show-error -X POST "$RENDER_DEPLOY_HOOK_URL"
+
+      - name: Wait for the new version to come up
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          if [ -z "$APP_URL" ]; then
+            echo "APP_URL variable not set, so skipping the health check."
+            exit 0
+          fi
+          # Render takes a few minutes to build. Poll /api/health for up to 10 minutes.
+          for i in $(seq 1 40); do
+            if curl --fail --silent "$APP_URL/api/health" > /dev/null; then
+              echo "Healthy after roughly $((i * 15))s"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::App did not become healthy in time"
+          exit 1

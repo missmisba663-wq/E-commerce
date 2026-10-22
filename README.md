@@ -137,7 +137,7 @@ The API and integration tests use a real MongoDB engine that runs in memory. You
 
 1. **API job**: unit, integration and API tests, plus a coverage report you can download as an artifact.
 2. **UI job**: UI tests, then a production build, so a broken build fails CI too.
-3. **Deploy job**: runs only on `main`, and only if both jobs above passed. It triggers a Render deploy, then polls `/api/health` until the new version is live.
+3. **Deploy job**: runs only on `main`, only if both jobs above passed, and only once deployment has been switched on (`DEPLOY_ENABLED`). It triggers a Render deploy, then polls `/api/health` until the new version is live.
 
 ### Deployment setup (one time)
 
@@ -147,6 +147,7 @@ The API and integration tests use a real MongoDB engine that runs in memory. You
 4. In GitHub, go to **Settings → Secrets and variables → Actions**:
    - Secret `RENDER_DEPLOY_HOOK_URL`: the hook URL
    - Variable `APP_URL`: e.g. `https://fernleaf.onrender.com` (used for the post-deploy health check)
+   - Variable `DEPLOY_ENABLED`: `true`. Until this is set, the deploy job is **skipped** (not failed), so the pipeline stays green while there's nowhere to deploy to.
 5. Add a `production` environment under **Settings → Environments** if you want manual approval before each deploy.
 
 ---

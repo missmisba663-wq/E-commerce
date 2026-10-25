@@ -6,7 +6,8 @@ services:
     name: shopverse
     runtime: node
     plan: free
-    buildCommand: npm ci && npm run build && npm run seed
+    # --include=dev: NODE_ENV=production would otherwise skip the build tools (Vite).
+    buildCommand: npm ci --include=dev && npm run build && npm run seed
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:

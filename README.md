@@ -1,4 +1,8 @@
-# ShopVerse
+# ShopVerse by Misbah
+
+**🔗 Live website: [https://shopverse-yph5.onrender.com](https://shopverse-yph5.onrender.com)**
+
+> Hosted on Render's free plan: after about 15 minutes without visitors the site sleeps, and the first visit can take up to a minute to load. Accounts and orders reset when it restarts.
 
 A full-stack e-commerce store with **138,882 real products** across 17 departments and 244 categories: fashion, electronics, computers, toys, video games, home & kitchen, beauty, baby, sports, pets, automotive, tools and more. Product titles, prices, discounts, ratings, best-seller flags and images come from a public Kaggle dataset of Amazon listings. Prices are shown in **Indian rupees (₹)**.
 

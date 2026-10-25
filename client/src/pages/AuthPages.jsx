@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router';
+import Logo from '../components/Logo.jsx';
 import { Field } from '../components/ui.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useDocumentTitle } from '../hooks/useApi.js';
@@ -13,7 +14,7 @@ function useRedirectTarget() {
 function AuthShell({ title, children, footer }) {
   return (
     <div className="auth-page">
-      <Link to="/" className="logo auth-logo">Shop<b>Verse</b></Link>
+      <Logo className="auth-logo" />
       <div className="card auth-card">
         <h1>{title}</h1>
         {children}

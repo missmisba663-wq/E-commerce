@@ -35,6 +35,7 @@ export function AboutPage() {
   return (
     <div className="container narrow prose">
       <h1>About ShopVerse</h1>
+      <p className="about-credit">Designed and built by <span className="signature">Misbah</span></p>
       <p>
         ShopVerse is a full-stack e-commerce application: product discovery with full-text search and filters,
         a persistent cart, wishlist, checkout with card (Stripe) or cash on delivery, order tracking, verified

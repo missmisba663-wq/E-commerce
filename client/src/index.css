@@ -133,8 +133,15 @@ input:disabled { background: var(--bg); color: var(--muted); }
 .nav-all:hover, .nav-link:hover { background: rgba(255, 255, 255, 0.1); }
 .nav-link.active { background: rgba(255, 255, 255, 0.14); }
 .nav-deals { color: #ffb199; }
-.logo { display: inline-flex; align-items: center; gap: 8px; font-size: 1.35rem; font-weight: 600; letter-spacing: -0.02em; flex-shrink: 0; }
+.logo { display: inline-flex; align-items: center; gap: 9px; font-size: 1.35rem; font-weight: 600; letter-spacing: -0.02em; flex-shrink: 0; }
 .logo b { color: var(--accent); font-weight: 800; }
+.logo-text { display: flex; flex-direction: column; line-height: 1; }
+.logo-name { line-height: 1.05; }
+/* The designer's signature, in a script font tucked under the wordmark. */
+.logo-by, .signature { font-family: 'Great Vibes', 'Brush Script MT', cursive; font-weight: 400; letter-spacing: 0; }
+.logo-by { font-size: 1.35rem; color: #ffb199; align-self: flex-end; margin-top: -4px; margin-right: -6px; }
+.signature { font-size: 1.35em; color: var(--accent); }
+.about-credit { font-size: 1.05rem; color: var(--muted); margin-top: -4px; }
 .header-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 .header-action { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 8px; background: none; border: 0; color: #fff; cursor: pointer; text-align: left; }
 .header-action:hover { background: rgba(255, 255, 255, 0.1); }
@@ -188,9 +195,11 @@ input:disabled { background: var(--bg); color: var(--muted); }
 .footer-grid h3 { color: #fff; font-size: 0.95rem; }
 .footer-grid a { display: block; padding: 3px 0; font-size: 0.9rem; }
 .footer-grid a:hover { color: #fff; text-decoration: underline; }
-.footer-grid .logo { color: #fff; margin-bottom: 10px; }
+.footer-grid .logo { display: inline-flex; padding: 0; color: #fff; margin-bottom: 10px; font-size: 1.35rem; }
+.footer-grid .logo:hover { text-decoration: none; }
 .footer-grid .muted { color: #98a2b3; max-width: 340px; }
 .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 18px; font-size: 0.8rem; color: #98a2b3; }
+.footer-bottom .signature { color: #ffb199; font-size: 1.6em; }
 
 /* Toasts */
 .toasts { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 100; max-width: calc(100vw - 32px); }
@@ -498,6 +507,7 @@ input:disabled { background: var(--bg); color: var(--muted); }
 /* Auth */
 .auth-page { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 40px 16px; background: var(--bg); }
 .auth-logo { color: var(--ink); font-size: 1.7rem; margin-bottom: 20px; }
+.auth-logo .logo-by { color: var(--accent); font-size: 1.3rem; }
 .auth-card { width: 100%; max-width: 400px; padding: 28px; }
 .auth-footer { width: 100%; max-width: 400px; margin-top: 16px; }
 .divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 0.85rem; margin: 8px 0 14px; }

@@ -7,19 +7,8 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useFreeShippingThreshold, useShop } from '../context/ShopContext.jsx';
 import DeptIcon from './DeptIcon.jsx';
+import Logo from './Logo.jsx';
 import SearchBox from './SearchBox.jsx';
-
-function Logo() {
-  return (
-    <Link to="/" className="logo" aria-label="ShopVerse home">
-      <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
-        <rect width="32" height="32" rx="8" fill="var(--accent)" />
-        <path d="M9 11h14l-1.6 9.2a2 2 0 0 1-2 1.8h-6.8a2 2 0 0 1-2-1.8L9 11Zm3.5 0V9.5a3.5 3.5 0 0 1 7 0V11" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-      <span>Shop<b>Verse</b></span>
-    </Link>
-  );
-}
 
 function AccountMenu() {
   const { user, logout } = useAuth();
@@ -174,7 +163,7 @@ export default function Layout() {
             <a href="https://www.kaggle.com/datasets/asaniczka/amazon-products-dataset-2023-1-4m-products" target="_blank" rel="noreferrer">Dataset source</a>
           </div>
         </div>
-        <div className="container footer-bottom">© {new Date().getFullYear()} ShopVerse. Product data and images from the Amazon Products 2023 dataset (Kaggle).</div>
+        <div className="container footer-bottom">© {new Date().getFullYear()} ShopVerse by <span className="signature">Misbah</span>. Product data and images from the Amazon Products 2023 dataset (Kaggle).</div>
       </footer>
       <ScrollRestoration />
     </>

@@ -36,6 +36,6 @@ export function useDebounced(value, delay = 250) {
 
 export function useDocumentTitle(title) {
   useEffect(() => {
-    document.title = title ? `${title} | ShopVerse` : 'ShopVerse — Everything you need, delivered';
+    document.title = title ? `${title} | ShopVerse by Misbah` : 'ShopVerse by Misbah — Everything you need, delivered';
   }, [title]);
 }

@@ -1,31 +1,48 @@
-const User = require('../models/User');
-const AppError = require('../utils/AppError');
-const asyncHandler = require('../utils/asyncHandler');
-const { verifyToken } = require('../utils/token');
+import jwt from 'jsonwebtoken';
+import { config } from '../config.js';
+import { sql } from '../db/index.js';
+import { HttpError } from '../lib/http.js';
 
-const protect = asyncHandler(async (req, res, next) => {
-  const [scheme, token] = (req.headers.authorization || '').split(' ');
-  if (scheme !== 'Bearer' || !token) throw new AppError('Please sign in to continue', 401);
+export const COOKIE_NAME = 'sv_token';
 
-  let payload;
-  try {
-    payload = verifyToken(token);
-  } catch {
-    throw new AppError('Your session has expired. Please sign in again.', 401);
-  }
-
-  const user = await User.findById(payload.sub);
-  if (!user) throw new AppError('We could not find your account', 401);
-
-  req.user = user;
-  next();
-});
-
-function adminOnly(req, res, next) {
-  if (!req.user || req.user.role !== 'admin') {
-    return next(new AppError('You need admin access to do that', 403));
-  }
-  return next();
+export function issueSession(res, user) {
+  const token = jwt.sign({ sub: user.id, role: user.role }, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
+  res.cookie(COOKIE_NAME, token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: config.isProd,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
 }
 
-module.exports = { protect, adminOnly };
+export function clearSession(res) {
+  res.clearCookie(COOKIE_NAME, { httpOnly: true, sameSite: 'lax', secure: config.isProd });
+}
+
+/** Attaches req.user when a valid session cookie is present; never rejects. */
+export function loadUser(req, _res, next) {
+  const token = req.cookies?.[COOKIE_NAME];
+  if (token) {
+    try {
+      const { sub } = jwt.verify(token, config.jwtSecret);
+      const user = sql('SELECT id, name, email, role, created_at FROM users WHERE id = ?').get(sub);
+      if (user) req.user = user;
+    } catch {
+      // expired or tampered token: treat as signed out
+    }
+  }
+  next();
+}
+
+export function requireAuth(req, _res, next) {
+  if (!req.user) return next(new HttpError(401, 'Please sign in to continue'));
+  next();
+}
+
+export function requireAdmin(req, _res, next) {
+  if (!req.user) return next(new HttpError(401, 'Please sign in to continue'));
+  if (req.user.role !== 'admin') return next(new HttpError(403, 'Admin access required'));
+  next();
+}
+
+export const publicUser = (u) => ({ id: u.id, name: u.name, email: u.email, role: u.role, createdAt: u.created_at });

@@ -1,20 +1,30 @@
-# Render blueprint: one web service that serves the API and the built React app.
-# autoDeploy is off on purpose. GitHub Actions triggers deploys, and only once the tests have passed.
+# One-click deploy on Render: New > Blueprint > select this repo.
 services:
   - type: web
-    name: fernleaf
+    name: shopverse
     runtime: node
-    plan: free
-    autoDeploy: false
-    buildCommand: npm ci --prefix server --omit=dev && npm ci --prefix client && npm run build --prefix client
-    startCommand: npm start --prefix server
+    plan: starter            # a persistent disk needs a paid plan; see README for the free option
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
     healthCheckPath: /api/health
     envVars:
+      - key: NODE_VERSION
+        value: "24"
       - key: NODE_ENV
         value: production
-      - key: NODE_VERSION
-        value: 24
       - key: JWT_SECRET
         generateValue: true
-      - key: MONGO_URI
-        sync: false # paste your MongoDB Atlas connection string in the Render dashboard
+      - key: ADMIN_EMAIL
+        value: admin@shopverse.dev
+      - key: ADMIN_PASSWORD
+        sync: false          # you'll be asked for it when creating the blueprint
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: DB_PATH
+        value: /var/data/shopverse.db
+    disk:
+      name: shopverse-data
+      mountPath: /var/data
+      sizeGB: 1

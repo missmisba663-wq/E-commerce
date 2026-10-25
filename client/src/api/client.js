@@ -1,75 +1,43 @@
-const TOKEN_KEY = 'fernleaf_token';
-
-// localStorage can throw (private mode, blocked storage), and a broken token store shouldn't crash the shop.
-export const tokenStore = {
-  get() {
-    try {
-      return localStorage.getItem(TOKEN_KEY);
-    } catch {
-      return null;
-    }
-  },
-  set(token) {
-    try {
-      localStorage.setItem(TOKEN_KEY, token);
-    } catch {
-      /* ignore */
-    }
-  },
-  clear() {
-    try {
-      localStorage.removeItem(TOKEN_KEY);
-    } catch {
-      /* ignore */
-    }
-  },
-};
-
 export class ApiError extends Error {
-  constructor(message, status, details = []) {
+  constructor(status, message, details) {
     super(message);
-    this.name = 'ApiError';
     this.status = status;
     this.details = details;
   }
-
-  // { "shippingAddress.postcode": "This field is required" }, which is handy for forms.
-  get fieldErrors() {
-    return Object.fromEntries((this.details || []).map((d) => [d.field, d.message]));
-  }
 }
 
-function buildQuery(params) {
-  if (!params) return '';
-  const qs = new URLSearchParams();
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') qs.set(key, value);
-  });
-  const str = qs.toString();
-  return str ? `?${str}` : '';
-}
-
-export async function request(path, { method = 'GET', body, params } = {}) {
-  const headers = { Accept: 'application/json' };
-  if (body !== undefined) headers['Content-Type'] = 'application/json';
-
-  const token = tokenStore.get();
-  if (token) headers.Authorization = `Bearer ${token}`;
-
+async function request(method, path, body) {
   let res;
   try {
-    res = await fetch(`/api${path}${buildQuery(params)}`, {
+    res = await fetch(`/api${path}`, {
       method,
-      headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      credentials: 'same-origin',
+      headers: body !== undefined ? { 'Content-Type': 'application/json' } : undefined,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch {
-    throw new ApiError("We couldn't reach the shop. Check your connection and try again.", 0);
+    throw new ApiError(0, "Can't reach the store right now. Check your connection and try again.");
   }
-
-  const data = await res.json().catch(() => null);
-  if (!res.ok) {
-    throw new ApiError(data?.error?.message || 'Something went wrong', res.status, data?.error?.details);
-  }
+  if (res.status === 204) return null;
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new ApiError(res.status, data.error || `Request failed (${res.status})`, data.details);
   return data;
+}
+
+export const api = {
+  get: (path) => request('GET', path),
+  post: (path, body = {}) => request('POST', path, body),
+  put: (path, body = {}) => request('PUT', path, body),
+  patch: (path, body = {}) => request('PATCH', path, body),
+  del: (path) => request('DELETE', path),
+};
+
+/** Builds a query string, dropping empty values. */
+export function qs(params) {
+  const s = new URLSearchParams();
+  for (const [k, v] of Object.entries(params)) {
+    if (v !== undefined && v !== null && v !== '' && v !== false) s.set(k, String(v));
+  }
+  const str = s.toString();
+  return str ? `?${str}` : '';
 }

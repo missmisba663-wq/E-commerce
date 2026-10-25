@@ -1,0 +1,1358 @@
+[
+  {
+    "slug": "fashion",
+    "name": "Fashion",
+    "icon": "shirt",
+    "sort": 0,
+    "categories": [
+      {
+        "id": 110,
+        "slug": "mens-clothing",
+        "name": "Men's Clothing"
+      },
+      {
+        "id": 112,
+        "slug": "mens-accessories",
+        "name": "Men's Accessories"
+      },
+      {
+        "id": 113,
+        "slug": "mens-watches",
+        "name": "Men's Watches"
+      },
+      {
+        "id": 114,
+        "slug": "mens-shoes",
+        "name": "Men's Shoes"
+      },
+      {
+        "id": 116,
+        "slug": "womens-clothing",
+        "name": "Women's Clothing"
+      },
+      {
+        "id": 118,
+        "slug": "womens-handbags",
+        "name": "Women's Handbags"
+      },
+      {
+        "id": 120,
+        "slug": "womens-accessories",
+        "name": "Women's Accessories"
+      },
+      {
+        "id": 121,
+        "slug": "womens-watches",
+        "name": "Women's Watches"
+      },
+      {
+        "id": 122,
+        "slug": "womens-shoes",
+        "name": "Women's Shoes"
+      },
+      {
+        "id": 123,
+        "slug": "womens-jewelry",
+        "name": "Women's Jewelry"
+      },
+      {
+        "id": 84,
+        "slug": "boys-clothing",
+        "name": "Boys' Clothing"
+      },
+      {
+        "id": 87,
+        "slug": "boys-accessories",
+        "name": "Boys' Accessories"
+      },
+      {
+        "id": 88,
+        "slug": "boys-jewelry",
+        "name": "Boys' Jewelry"
+      },
+      {
+        "id": 89,
+        "slug": "boys-watches",
+        "name": "Boys' Watches"
+      },
+      {
+        "id": 90,
+        "slug": "boys-shoes",
+        "name": "Boys' Shoes"
+      },
+      {
+        "id": 91,
+        "slug": "girls-clothing",
+        "name": "Girls' Clothing"
+      },
+      {
+        "id": 94,
+        "slug": "girls-accessories",
+        "name": "Girls' Accessories"
+      },
+      {
+        "id": 95,
+        "slug": "girls-jewelry",
+        "name": "Girls' Jewelry"
+      },
+      {
+        "id": 96,
+        "slug": "girls-watches",
+        "name": "Girls' Watches"
+      },
+      {
+        "id": 97,
+        "slug": "girls-shoes",
+        "name": "Girls' Shoes"
+      },
+      {
+        "id": 98,
+        "slug": "girls-school-uniforms",
+        "name": "Girls' School Uniforms"
+      },
+      {
+        "id": 265,
+        "slug": "boys-school-uniforms",
+        "name": "Boys' School Uniforms"
+      }
+    ]
+  },
+  {
+    "slug": "electronics",
+    "name": "Electronics",
+    "icon": "headphones",
+    "sort": 1,
+    "categories": [
+      {
+        "id": 68,
+        "slug": "wearable-technology",
+        "name": "Wearable Technology"
+      },
+      {
+        "id": 69,
+        "slug": "televisions-and-video-products",
+        "name": "Televisions & Video Products"
+      },
+      {
+        "id": 70,
+        "slug": "gps-and-navigation",
+        "name": "GPS & Navigation"
+      },
+      {
+        "id": 71,
+        "slug": "headphones-and-earbuds",
+        "name": "Headphones & Earbuds"
+      },
+      {
+        "id": 72,
+        "slug": "office-electronics",
+        "name": "Office Electronics"
+      },
+      {
+        "id": 73,
+        "slug": "portable-audio-and-video",
+        "name": "Portable Audio & Video"
+      },
+      {
+        "id": 74,
+        "slug": "ebook-readers-and-accessories",
+        "name": "eBook Readers & Accessories"
+      },
+      {
+        "id": 75,
+        "slug": "cell-phones-and-accessories",
+        "name": "Cell Phones & Accessories"
+      },
+      {
+        "id": 76,
+        "slug": "accessories-and-supplies",
+        "name": "Accessories & Supplies"
+      },
+      {
+        "id": 77,
+        "slug": "video-projectors",
+        "name": "Video Projectors"
+      },
+      {
+        "id": 78,
+        "slug": "vehicle-electronics",
+        "name": "Vehicle Electronics"
+      },
+      {
+        "id": 79,
+        "slug": "camera-and-photo",
+        "name": "Camera & Photo"
+      },
+      {
+        "id": 80,
+        "slug": "security-and-surveillance-equipment",
+        "name": "Security & Surveillance Equipment"
+      },
+      {
+        "id": 82,
+        "slug": "home-audio-and-theater-products",
+        "name": "Home Audio & Theater Products"
+      },
+      {
+        "id": 26,
+        "slug": "car-electronics-and-accessories",
+        "name": "Car Electronics & Accessories"
+      }
+    ]
+  },
+  {
+    "slug": "computers",
+    "name": "Computers",
+    "icon": "laptop",
+    "sort": 2,
+    "categories": [
+      {
+        "id": 54,
+        "slug": "computer-servers",
+        "name": "Computer Servers"
+      },
+      {
+        "id": 55,
+        "slug": "data-storage",
+        "name": "Data Storage"
+      },
+      {
+        "id": 56,
+        "slug": "computer-monitors",
+        "name": "Computer Monitors"
+      },
+      {
+        "id": 57,
+        "slug": "computers-and-tablets",
+        "name": "Computers & Tablets"
+      },
+      {
+        "id": 58,
+        "slug": "tablet-replacement-parts",
+        "name": "Tablet Replacement Parts"
+      },
+      {
+        "id": 60,
+        "slug": "computer-networking",
+        "name": "Computer Networking"
+      },
+      {
+        "id": 63,
+        "slug": "computer-components",
+        "name": "Computer Components"
+      },
+      {
+        "id": 64,
+        "slug": "tablet-accessories",
+        "name": "Tablet Accessories"
+      },
+      {
+        "id": 65,
+        "slug": "laptop-accessories",
+        "name": "Laptop Accessories"
+      },
+      {
+        "id": 66,
+        "slug": "computer-external-components",
+        "name": "Computer External Components"
+      },
+      {
+        "id": 81,
+        "slug": "computers",
+        "name": "Computers"
+      }
+    ]
+  },
+  {
+    "slug": "smart-home",
+    "name": "Smart Home",
+    "icon": "house-wifi",
+    "sort": 3,
+    "categories": [
+      {
+        "id": 185,
+        "slug": "smart-home-new-smart-devices",
+        "name": "Smart Home: New Smart Devices"
+      },
+      {
+        "id": 186,
+        "slug": "smart-home-voice-assistants-and-hubs",
+        "name": "Smart Home: Voice Assistants and Hubs"
+      },
+      {
+        "id": 187,
+        "slug": "smart-home-smart-locks-and-entry",
+        "name": "Smart Home: Smart Locks and Entry"
+      },
+      {
+        "id": 188,
+        "slug": "smart-home-home-entertainment",
+        "name": "Smart Home: Home Entertainment"
+      },
+      {
+        "id": 189,
+        "slug": "smart-home-wifi-and-networking",
+        "name": "Smart Home: WiFi and Networking"
+      },
+      {
+        "id": 190,
+        "slug": "smart-home-security-cameras-and-systems",
+        "name": "Smart Home: Security Cameras and Systems"
+      },
+      {
+        "id": 191,
+        "slug": "smart-home-lighting",
+        "name": "Smart Home: Lighting"
+      },
+      {
+        "id": 192,
+        "slug": "smart-home-plugs-and-outlets",
+        "name": "Smart Home: Plugs and Outlets"
+      },
+      {
+        "id": 193,
+        "slug": "smart-home-vacuums-and-mops",
+        "name": "Smart Home: Vacuums and Mops"
+      },
+      {
+        "id": 195,
+        "slug": "smart-home-lawn-and-garden",
+        "name": "Smart Home: Lawn and Garden"
+      },
+      {
+        "id": 196,
+        "slug": "smart-home-other-solutions",
+        "name": "Smart Home: Other Solutions"
+      },
+      {
+        "id": 197,
+        "slug": "smart-home-heating-and-cooling",
+        "name": "Smart Home - Heating & Cooling"
+      }
+    ]
+  },
+  {
+    "slug": "video-games",
+    "name": "Video Games",
+    "icon": "gamepad",
+    "sort": 4,
+    "categories": [
+      {
+        "id": 83,
+        "slug": "video-game-consoles-and-accessories",
+        "name": "Video Game Consoles & Accessories"
+      },
+      {
+        "id": 241,
+        "slug": "sony-psp-games-consoles-and-accessories",
+        "name": "Sony PSP Games, Consoles & Accessories"
+      },
+      {
+        "id": 242,
+        "slug": "nintendo-ds-games-consoles-and-accessories",
+        "name": "Nintendo DS Games, Consoles & Accessories"
+      },
+      {
+        "id": 243,
+        "slug": "playstation-3-games-consoles-and-accessories",
+        "name": "PlayStation 3 Games, Consoles & Accessories"
+      },
+      {
+        "id": 244,
+        "slug": "wii-games-consoles-and-accessories",
+        "name": "Wii Games, Consoles & Accessories"
+      },
+      {
+        "id": 245,
+        "slug": "xbox-360-games-consoles-and-accessories",
+        "name": "Xbox 360 Games, Consoles & Accessories"
+      },
+      {
+        "id": 248,
+        "slug": "mac-games-and-accessories",
+        "name": "Mac Games & Accessories"
+      },
+      {
+        "id": 249,
+        "slug": "nintendo-3ds-and-2ds-consoles-games-and-accessories",
+        "name": "Nintendo 3DS & 2DS Consoles, Games & Accessories"
+      },
+      {
+        "id": 250,
+        "slug": "legacy-systems",
+        "name": "Legacy Systems"
+      },
+      {
+        "id": 251,
+        "slug": "playstation-vita-games-consoles-and-accessories",
+        "name": "PlayStation Vita Games, Consoles & Accessories"
+      },
+      {
+        "id": 252,
+        "slug": "wii-u-games-consoles-and-accessories",
+        "name": "Wii U Games, Consoles & Accessories"
+      },
+      {
+        "id": 253,
+        "slug": "playstation-4-games-consoles-and-accessories",
+        "name": "PlayStation 4 Games, Consoles & Accessories"
+      },
+      {
+        "id": 254,
+        "slug": "xbox-one-games-consoles-and-accessories",
+        "name": "Xbox One Games, Consoles & Accessories"
+      },
+      {
+        "id": 255,
+        "slug": "video-games",
+        "name": "Video Games"
+      },
+      {
+        "id": 259,
+        "slug": "virtual-reality-hardware-and-accessories",
+        "name": "Virtual Reality Hardware & Accessories"
+      },
+      {
+        "id": 260,
+        "slug": "nintendo-switch-consoles-games-and-accessories",
+        "name": "Nintendo Switch Consoles, Games & Accessories"
+      },
+      {
+        "id": 261,
+        "slug": "playstation-5-consoles-games-and-accessories",
+        "name": "PlayStation 5 Consoles, Games & Accessories"
+      },
+      {
+        "id": 262,
+        "slug": "xbox-series-x-and-s-consoles-games-and-accessories",
+        "name": "Xbox Series X & S Consoles, Games & Accessories"
+      },
+      {
+        "id": 263,
+        "slug": "pc-games-and-accessories",
+        "name": "PC Games & Accessories"
+      }
+    ]
+  },
+  {
+    "slug": "toys-games",
+    "name": "Toys & Games",
+    "icon": "puzzle",
+    "sort": 5,
+    "categories": [
+      {
+        "id": 216,
+        "slug": "kids-party-supplies",
+        "name": "Kids' Party Supplies"
+      },
+      {
+        "id": 217,
+        "slug": "toy-figures-and-playsets",
+        "name": "Toy Figures & Playsets"
+      },
+      {
+        "id": 218,
+        "slug": "novelty-toys-and-amusements",
+        "name": "Novelty Toys & Amusements"
+      },
+      {
+        "id": 219,
+        "slug": "arts-and-crafts-supplies",
+        "name": "Arts & Crafts Supplies"
+      },
+      {
+        "id": 220,
+        "slug": "building-toys",
+        "name": "Building Toys"
+      },
+      {
+        "id": 221,
+        "slug": "dolls-and-accessories",
+        "name": "Dolls & Accessories"
+      },
+      {
+        "id": 222,
+        "slug": "kids-electronics",
+        "name": "Kids' Electronics"
+      },
+      {
+        "id": 223,
+        "slug": "games-and-accessories",
+        "name": "Games & Accessories"
+      },
+      {
+        "id": 224,
+        "slug": "learning-and-education-toys",
+        "name": "Learning & Education Toys"
+      },
+      {
+        "id": 225,
+        "slug": "kids-dress-up-and-pretend-play",
+        "name": "Kids' Dress Up & Pretend Play"
+      },
+      {
+        "id": 226,
+        "slug": "puppets-and-puppet-theaters",
+        "name": "Puppets & Puppet Theaters"
+      },
+      {
+        "id": 227,
+        "slug": "puzzles",
+        "name": "Puzzles"
+      },
+      {
+        "id": 228,
+        "slug": "sports-and-outdoor-play-toys",
+        "name": "Sports & Outdoor Play Toys"
+      },
+      {
+        "id": 229,
+        "slug": "stuffed-animals-and-plush-toys",
+        "name": "Stuffed Animals & Plush Toys"
+      },
+      {
+        "id": 230,
+        "slug": "baby-and-toddler-toys",
+        "name": "Baby & Toddler Toys"
+      },
+      {
+        "id": 231,
+        "slug": "tricycles-scooters-and-wagons",
+        "name": "Tricycles, Scooters & Wagons"
+      },
+      {
+        "id": 232,
+        "slug": "finger-toys",
+        "name": "Finger Toys"
+      },
+      {
+        "id": 233,
+        "slug": "toy-vehicle-playsets",
+        "name": "Toy Vehicle Playsets"
+      },
+      {
+        "id": 234,
+        "slug": "kids-play-trains-and-trams",
+        "name": "Kids' Play Trains & Trams"
+      },
+      {
+        "id": 235,
+        "slug": "kids-play-trucks",
+        "name": "Kids' Play Trucks"
+      },
+      {
+        "id": 236,
+        "slug": "kids-play-cars-and-race-cars",
+        "name": "Kids' Play Cars & Race Cars"
+      },
+      {
+        "id": 237,
+        "slug": "kids-play-boats",
+        "name": "Kids' Play Boats"
+      },
+      {
+        "id": 238,
+        "slug": "kids-play-buses",
+        "name": "Kids' Play Buses"
+      },
+      {
+        "id": 239,
+        "slug": "kids-play-tractors",
+        "name": "Kids' Play Tractors"
+      },
+      {
+        "id": 240,
+        "slug": "slot-cars-race-tracks-and-accessories",
+        "name": "Slot Cars, Race Tracks & Accessories"
+      },
+      {
+        "id": 270,
+        "slug": "toys-and-games",
+        "name": "Toys & Games"
+      }
+    ]
+  },
+  {
+    "slug": "home-kitchen",
+    "name": "Home & Kitchen",
+    "icon": "sofa",
+    "sort": 6,
+    "categories": [
+      {
+        "id": 124,
+        "slug": "kids-furniture",
+        "name": "Kids' Furniture"
+      },
+      {
+        "id": 163,
+        "slug": "bath-products",
+        "name": "Bath Products"
+      },
+      {
+        "id": 164,
+        "slug": "bedding",
+        "name": "Bedding"
+      },
+      {
+        "id": 165,
+        "slug": "home-d-cor-products",
+        "name": "Home Décor Products"
+      },
+      {
+        "id": 166,
+        "slug": "furniture",
+        "name": "Furniture"
+      },
+      {
+        "id": 167,
+        "slug": "household-cleaning-supplies",
+        "name": "Household Cleaning Supplies"
+      },
+      {
+        "id": 168,
+        "slug": "seasonal-d-cor",
+        "name": "Seasonal Décor"
+      },
+      {
+        "id": 169,
+        "slug": "home-lighting-and-ceiling-fans",
+        "name": "Home Lighting & Ceiling Fans"
+      },
+      {
+        "id": 170,
+        "slug": "kitchen-and-dining",
+        "name": "Kitchen & Dining"
+      },
+      {
+        "id": 171,
+        "slug": "heating-cooling-and-air-quality",
+        "name": "Heating, Cooling & Air Quality"
+      },
+      {
+        "id": 172,
+        "slug": "kids-home-store",
+        "name": "Kids' Home Store"
+      },
+      {
+        "id": 173,
+        "slug": "home-storage-and-organization",
+        "name": "Home Storage & Organization"
+      },
+      {
+        "id": 174,
+        "slug": "wall-art",
+        "name": "Wall Art"
+      },
+      {
+        "id": 175,
+        "slug": "vacuum-cleaners-and-floor-care",
+        "name": "Vacuum Cleaners & Floor Care"
+      },
+      {
+        "id": 176,
+        "slug": "ironing-products",
+        "name": "Ironing Products"
+      },
+      {
+        "id": 177,
+        "slug": "party-supplies",
+        "name": "Party Supplies"
+      },
+      {
+        "id": 201,
+        "slug": "home-appliances",
+        "name": "Home Appliances"
+      }
+    ]
+  },
+  {
+    "slug": "beauty",
+    "name": "Beauty & Personal Care",
+    "icon": "sparkles",
+    "sort": 7,
+    "categories": [
+      {
+        "id": 45,
+        "slug": "beauty-and-personal-care",
+        "name": "Beauty & Personal Care"
+      },
+      {
+        "id": 46,
+        "slug": "perfumes-and-fragrances",
+        "name": "Perfumes & Fragrances"
+      },
+      {
+        "id": 47,
+        "slug": "hair-care-products",
+        "name": "Hair Care Products"
+      },
+      {
+        "id": 48,
+        "slug": "makeup",
+        "name": "Makeup"
+      },
+      {
+        "id": 49,
+        "slug": "skin-care-products",
+        "name": "Skin Care Products"
+      },
+      {
+        "id": 50,
+        "slug": "beauty-tools-and-accessories",
+        "name": "Beauty Tools & Accessories"
+      },
+      {
+        "id": 51,
+        "slug": "foot-hand-and-nail-care-products",
+        "name": "Foot, Hand & Nail Care Products"
+      },
+      {
+        "id": 52,
+        "slug": "personal-care-products",
+        "name": "Personal Care Products"
+      },
+      {
+        "id": 53,
+        "slug": "shaving-and-hair-removal-products",
+        "name": "Shaving & Hair Removal Products"
+      },
+      {
+        "id": 126,
+        "slug": "oral-care-products",
+        "name": "Oral Care Products"
+      }
+    ]
+  },
+  {
+    "slug": "health",
+    "name": "Health & Household",
+    "icon": "heart-pulse",
+    "sort": 8,
+    "categories": [
+      {
+        "id": 127,
+        "slug": "vision-products",
+        "name": "Vision Products"
+      },
+      {
+        "id": 128,
+        "slug": "wellness-and-relaxation-products",
+        "name": "Wellness & Relaxation Products"
+      },
+      {
+        "id": 129,
+        "slug": "baby-and-child-care-products",
+        "name": "Baby & Child Care Products"
+      },
+      {
+        "id": 130,
+        "slug": "household-supplies",
+        "name": "Household Supplies"
+      },
+      {
+        "id": 131,
+        "slug": "health-care-products",
+        "name": "Health Care Products"
+      },
+      {
+        "id": 132,
+        "slug": "diet-and-sports-nutrition",
+        "name": "Diet & Sports Nutrition"
+      },
+      {
+        "id": 133,
+        "slug": "home-use-medical-supplies-and-equipment",
+        "name": "Home Use Medical Supplies & Equipment"
+      },
+      {
+        "id": 135,
+        "slug": "health-and-household",
+        "name": "Health & Household"
+      },
+      {
+        "id": 136,
+        "slug": "sports-nutrition-products",
+        "name": "Sports Nutrition Products"
+      }
+    ]
+  },
+  {
+    "slug": "baby",
+    "name": "Baby",
+    "icon": "baby",
+    "sort": 9,
+    "categories": [
+      {
+        "id": 29,
+        "slug": "baby-diapering-products",
+        "name": "Baby Diapering Products"
+      },
+      {
+        "id": 30,
+        "slug": "baby-and-toddler-feeding-supplies",
+        "name": "Baby & Toddler Feeding Supplies"
+      },
+      {
+        "id": 31,
+        "slug": "pregnancy-and-maternity-products",
+        "name": "Pregnancy & Maternity Products"
+      },
+      {
+        "id": 32,
+        "slug": "child-safety-car-seats-and-accessories",
+        "name": "Child Safety Car Seats & Accessories"
+      },
+      {
+        "id": 33,
+        "slug": "baby-safety-products",
+        "name": "Baby Safety Products"
+      },
+      {
+        "id": 34,
+        "slug": "toilet-training-products",
+        "name": "Toilet Training Products"
+      },
+      {
+        "id": 35,
+        "slug": "baby-care-products",
+        "name": "Baby Care Products"
+      },
+      {
+        "id": 36,
+        "slug": "baby-travel-gear",
+        "name": "Baby Travel Gear"
+      },
+      {
+        "id": 38,
+        "slug": "baby-activity-and-entertainment-products",
+        "name": "Baby Activity & Entertainment Products"
+      },
+      {
+        "id": 39,
+        "slug": "baby-gifts",
+        "name": "Baby Gifts"
+      },
+      {
+        "id": 40,
+        "slug": "baby-stationery",
+        "name": "Baby Stationery"
+      },
+      {
+        "id": 41,
+        "slug": "nursery-furniture-bedding-and-d-cor",
+        "name": "Nursery Furniture, Bedding & Décor"
+      },
+      {
+        "id": 42,
+        "slug": "baby",
+        "name": "Baby"
+      },
+      {
+        "id": 43,
+        "slug": "baby-boys-clothing-and-shoes",
+        "name": "Baby Boys' Clothing & Shoes"
+      },
+      {
+        "id": 44,
+        "slug": "baby-strollers-and-accessories",
+        "name": "Baby Strollers & Accessories"
+      },
+      {
+        "id": 264,
+        "slug": "baby-girls-clothing-and-shoes",
+        "name": "Baby Girls' Clothing & Shoes"
+      }
+    ]
+  },
+  {
+    "slug": "sports-outdoors",
+    "name": "Sports & Outdoors",
+    "icon": "dumbbell",
+    "sort": 10,
+    "categories": [
+      {
+        "id": 198,
+        "slug": "sports-and-fitness",
+        "name": "Sports & Fitness"
+      },
+      {
+        "id": 199,
+        "slug": "outdoor-recreation",
+        "name": "Outdoor Recreation"
+      },
+      {
+        "id": 200,
+        "slug": "sports-and-outdoors",
+        "name": "Sports & Outdoors"
+      }
+    ]
+  },
+  {
+    "slug": "pets",
+    "name": "Pet Supplies",
+    "icon": "paw-print",
+    "sort": 11,
+    "categories": [
+      {
+        "id": 178,
+        "slug": "pet-bird-supplies",
+        "name": "Pet Bird Supplies"
+      },
+      {
+        "id": 179,
+        "slug": "cat-supplies",
+        "name": "Cat Supplies"
+      },
+      {
+        "id": 180,
+        "slug": "dog-supplies",
+        "name": "Dog Supplies"
+      },
+      {
+        "id": 181,
+        "slug": "fish-and-aquatic-pets",
+        "name": "Fish & Aquatic Pets"
+      },
+      {
+        "id": 182,
+        "slug": "horse-supplies",
+        "name": "Horse Supplies"
+      },
+      {
+        "id": 183,
+        "slug": "reptiles-and-amphibian-supplies",
+        "name": "Reptiles & Amphibian Supplies"
+      },
+      {
+        "id": 184,
+        "slug": "small-animal-supplies",
+        "name": "Small Animal Supplies"
+      }
+    ]
+  },
+  {
+    "slug": "luggage",
+    "name": "Luggage & Travel",
+    "icon": "luggage",
+    "sort": 12,
+    "categories": [
+      {
+        "id": 99,
+        "slug": "travel-duffel-bags",
+        "name": "Travel Duffel Bags"
+      },
+      {
+        "id": 100,
+        "slug": "messenger-bags",
+        "name": "Messenger Bags"
+      },
+      {
+        "id": 101,
+        "slug": "travel-tote-bags",
+        "name": "Travel Tote Bags"
+      },
+      {
+        "id": 102,
+        "slug": "garment-bags",
+        "name": "Garment Bags"
+      },
+      {
+        "id": 103,
+        "slug": "luggage-sets",
+        "name": "Luggage Sets"
+      },
+      {
+        "id": 104,
+        "slug": "suitcases",
+        "name": "Suitcases"
+      },
+      {
+        "id": 105,
+        "slug": "travel-accessories",
+        "name": "Travel Accessories"
+      },
+      {
+        "id": 106,
+        "slug": "rain-umbrellas",
+        "name": "Rain Umbrellas"
+      },
+      {
+        "id": 107,
+        "slug": "backpacks",
+        "name": "Backpacks"
+      },
+      {
+        "id": 108,
+        "slug": "luggage",
+        "name": "Luggage"
+      },
+      {
+        "id": 109,
+        "slug": "laptop-bags",
+        "name": "Laptop Bags"
+      }
+    ]
+  },
+  {
+    "slug": "automotive",
+    "name": "Automotive",
+    "icon": "car",
+    "sort": 13,
+    "categories": [
+      {
+        "id": 14,
+        "slug": "automotive-paint-and-paint-supplies",
+        "name": "Automotive Paint & Paint Supplies"
+      },
+      {
+        "id": 15,
+        "slug": "heavy-duty-and-commercial-vehicle-equipment",
+        "name": "Heavy Duty & Commercial Vehicle Equipment"
+      },
+      {
+        "id": 16,
+        "slug": "automotive-tires-and-wheels",
+        "name": "Automotive Tires & Wheels"
+      },
+      {
+        "id": 17,
+        "slug": "automotive-tools-and-equipment",
+        "name": "Automotive Tools & Equipment"
+      },
+      {
+        "id": 18,
+        "slug": "automotive-performance-parts-and-accessories",
+        "name": "Automotive Performance Parts & Accessories"
+      },
+      {
+        "id": 19,
+        "slug": "car-care",
+        "name": "Car Care"
+      },
+      {
+        "id": 20,
+        "slug": "oils-and-fluids",
+        "name": "Oils & Fluids"
+      },
+      {
+        "id": 21,
+        "slug": "automotive-replacement-parts",
+        "name": "Automotive Replacement Parts"
+      },
+      {
+        "id": 22,
+        "slug": "lights-bulbs-and-indicators",
+        "name": "Lights, Bulbs & Indicators"
+      },
+      {
+        "id": 23,
+        "slug": "automotive-interior-accessories",
+        "name": "Automotive Interior Accessories"
+      },
+      {
+        "id": 24,
+        "slug": "automotive-exterior-accessories",
+        "name": "Automotive Exterior Accessories"
+      },
+      {
+        "id": 25,
+        "slug": "automotive-enthusiast-merchandise",
+        "name": "Automotive Enthusiast Merchandise"
+      },
+      {
+        "id": 27,
+        "slug": "rv-parts-and-accessories",
+        "name": "RV Parts & Accessories"
+      },
+      {
+        "id": 28,
+        "slug": "motorcycle-and-powersports",
+        "name": "Motorcycle & Powersports"
+      }
+    ]
+  },
+  {
+    "slug": "tools",
+    "name": "Tools & Home Improvement",
+    "icon": "hammer",
+    "sort": 14,
+    "categories": [
+      {
+        "id": 203,
+        "slug": "pumps-and-plumbing-equipment",
+        "name": "Pumps & Plumbing Equipment"
+      },
+      {
+        "id": 204,
+        "slug": "paint-wall-treatments-and-supplies",
+        "name": "Paint, Wall Treatments & Supplies"
+      },
+      {
+        "id": 205,
+        "slug": "safety-and-security",
+        "name": "Safety & Security"
+      },
+      {
+        "id": 206,
+        "slug": "light-bulbs",
+        "name": "Light Bulbs"
+      },
+      {
+        "id": 207,
+        "slug": "power-tools-and-hand-tools",
+        "name": "Power Tools & Hand Tools"
+      },
+      {
+        "id": 208,
+        "slug": "kitchen-and-bath-fixtures",
+        "name": "Kitchen & Bath Fixtures"
+      },
+      {
+        "id": 209,
+        "slug": "lighting-and-ceiling-fans",
+        "name": "Lighting & Ceiling Fans"
+      },
+      {
+        "id": 210,
+        "slug": "electrical-equipment",
+        "name": "Electrical Equipment"
+      },
+      {
+        "id": 211,
+        "slug": "hardware",
+        "name": "Hardware"
+      },
+      {
+        "id": 212,
+        "slug": "building-supplies",
+        "name": "Building Supplies"
+      },
+      {
+        "id": 213,
+        "slug": "measuring-and-layout",
+        "name": "Measuring & Layout"
+      },
+      {
+        "id": 214,
+        "slug": "welding-and-soldering",
+        "name": "Welding & Soldering"
+      },
+      {
+        "id": 215,
+        "slug": "tools-and-home-improvement",
+        "name": "Tools & Home Improvement"
+      }
+    ]
+  },
+  {
+    "slug": "arts-crafts",
+    "name": "Arts, Crafts & Office",
+    "icon": "palette",
+    "sort": 15,
+    "categories": [
+      {
+        "id": 1,
+        "slug": "beading-and-jewelry-making",
+        "name": "Beading & Jewelry Making"
+      },
+      {
+        "id": 2,
+        "slug": "fabric-decorating",
+        "name": "Fabric Decorating"
+      },
+      {
+        "id": 3,
+        "slug": "knitting-and-crochet-supplies",
+        "name": "Knitting & Crochet Supplies"
+      },
+      {
+        "id": 4,
+        "slug": "printmaking-supplies",
+        "name": "Printmaking Supplies"
+      },
+      {
+        "id": 5,
+        "slug": "scrapbooking-and-stamping-supplies",
+        "name": "Scrapbooking & Stamping Supplies"
+      },
+      {
+        "id": 6,
+        "slug": "sewing-products",
+        "name": "Sewing Products"
+      },
+      {
+        "id": 7,
+        "slug": "craft-and-hobby-fabric",
+        "name": "Craft & Hobby Fabric"
+      },
+      {
+        "id": 8,
+        "slug": "needlework-supplies",
+        "name": "Needlework Supplies"
+      },
+      {
+        "id": 9,
+        "slug": "arts-crafts-and-sewing-storage",
+        "name": "Arts, Crafts & Sewing Storage"
+      },
+      {
+        "id": 10,
+        "slug": "painting-drawing-and-art-supplies",
+        "name": "Painting, Drawing & Art Supplies"
+      },
+      {
+        "id": 11,
+        "slug": "craft-supplies-and-materials",
+        "name": "Craft Supplies & Materials"
+      },
+      {
+        "id": 12,
+        "slug": "gift-wrapping-supplies",
+        "name": "Gift Wrapping Supplies"
+      },
+      {
+        "id": 13,
+        "slug": "party-decorations",
+        "name": "Party Decorations"
+      },
+      {
+        "id": 137,
+        "slug": "stationery-and-gift-wrapping-supplies",
+        "name": "Stationery & Gift Wrapping Supplies"
+      }
+    ]
+  },
+  {
+    "slug": "industrial",
+    "name": "Industrial & Scientific",
+    "icon": "flask",
+    "sort": 16,
+    "categories": [
+      {
+        "id": 138,
+        "slug": "commercial-door-products",
+        "name": "Commercial Door Products"
+      },
+      {
+        "id": 139,
+        "slug": "power-transmission-products",
+        "name": "Power Transmission Products"
+      },
+      {
+        "id": 140,
+        "slug": "industrial-materials",
+        "name": "Industrial Materials"
+      },
+      {
+        "id": 141,
+        "slug": "industrial-hardware",
+        "name": "Industrial Hardware"
+      },
+      {
+        "id": 142,
+        "slug": "abrasive-and-finishing-products",
+        "name": "Abrasive & Finishing Products"
+      },
+      {
+        "id": 143,
+        "slug": "industrial-adhesives-sealants-and-lubricants",
+        "name": "Industrial Adhesives, Sealants & Lubricants"
+      },
+      {
+        "id": 144,
+        "slug": "material-handling-products",
+        "name": "Material Handling Products"
+      },
+      {
+        "id": 145,
+        "slug": "test-measure-and-inspect",
+        "name": "Test, Measure & Inspect"
+      },
+      {
+        "id": 146,
+        "slug": "industrial-power-and-hand-tools",
+        "name": "Industrial Power & Hand Tools"
+      },
+      {
+        "id": 147,
+        "slug": "hydraulics-pneumatics-and-plumbing",
+        "name": "Hydraulics, Pneumatics & Plumbing"
+      },
+      {
+        "id": 148,
+        "slug": "filtration",
+        "name": "Filtration"
+      },
+      {
+        "id": 149,
+        "slug": "electronic-components",
+        "name": "Electronic Components"
+      },
+      {
+        "id": 150,
+        "slug": "lab-and-scientific-products",
+        "name": "Lab & Scientific Products"
+      },
+      {
+        "id": 151,
+        "slug": "janitorial-and-sanitation-supplies",
+        "name": "Janitorial & Sanitation Supplies"
+      },
+      {
+        "id": 152,
+        "slug": "occupational-health-and-safety-products",
+        "name": "Occupational Health & Safety Products"
+      },
+      {
+        "id": 153,
+        "slug": "cutting-tools",
+        "name": "Cutting Tools"
+      },
+      {
+        "id": 154,
+        "slug": "fasteners",
+        "name": "Fasteners"
+      },
+      {
+        "id": 155,
+        "slug": "science-education-supplies",
+        "name": "Science Education Supplies"
+      },
+      {
+        "id": 156,
+        "slug": "food-service-equipment-and-supplies",
+        "name": "Food Service Equipment & Supplies"
+      },
+      {
+        "id": 157,
+        "slug": "additive-manufacturing-products",
+        "name": "Additive Manufacturing Products"
+      },
+      {
+        "id": 158,
+        "slug": "professional-medical-supplies",
+        "name": "Professional Medical Supplies"
+      },
+      {
+        "id": 159,
+        "slug": "professional-dental-supplies",
+        "name": "Professional Dental Supplies"
+      },
+      {
+        "id": 160,
+        "slug": "packaging-and-shipping-supplies",
+        "name": "Packaging & Shipping Supplies"
+      },
+      {
+        "id": 161,
+        "slug": "retail-store-fixtures-and-equipment",
+        "name": "Retail Store Fixtures & Equipment"
+      },
+      {
+        "id": 162,
+        "slug": "industrial-and-scientific",
+        "name": "Industrial & Scientific"
+      }
+    ]
+  }
+]

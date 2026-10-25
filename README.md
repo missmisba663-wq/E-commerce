@@ -1,157 +1,154 @@
-# 🌿 Fernleaf
+# ShopVerse
 
-Fernleaf is an online shop for houseplants, pots and plant-care supplies. It's a full-stack app (React, Node.js/Express, MongoDB) built in five modules: **catalogue, cart, checkout, order processing and admin**. Around 160 automated tests run on every push, and a GitHub Actions pipeline deploys automatically once they pass.
+A full-stack e-commerce store with **138,882 real products** across 17 departments and 244 categories: fashion, electronics, computers, toys, video games, home & kitchen, beauty, baby, sports, pets, automotive, tools and more. Product titles, prices, discounts, ratings, best-seller flags and images come from a public Kaggle dataset of Amazon listings. Prices are shown in **Indian rupees (₹)**.
 
-It's built to behave like a real small shop, not a tutorial. Prices are stored in pence, so there's no floating-point rounding. Stock is reserved atomically, so two people can't buy the last plant. A declined card puts everything back the way it was. Customers can cancel up until their order is packed.
+## Features
 
----
+**Shopping**
+- Full-text product search with autocomplete. Results are ranked by relevance and popularity, and category matches count, so "shoes" returns shoes rather than shoe racks.
+- Browse by department or category, with category facets, price ranges, rating, on-sale, best-seller and in-stock filters, six sort orders, and pagination
+- Product pages with highlights, stock status, delivery estimate, related products and "customers also bought"
+- A cart that works for guests (stored in the browser) and merges into the account at sign-in
+- Wishlist, saved addresses, profile and password management
+- Checkout by card through **Stripe Checkout**, or **cash on delivery**. Stock is reserved atomically, so two shoppers can't buy the last unit.
+- Order tracking with a status timeline. Customers can cancel before shipping (card payments are refunded automatically). Unpaid card orders release their stock after 60 minutes.
+- Verified-purchase reviews: only customers whose order was delivered can review an item.
 
-## Try it in two minutes
+**Admin dashboard** (`/admin`)
+- Revenue, order count, average order value, new customers, revenue-per-day chart, sales by department, top products
+- Order fulfilment: confirm, ship (with tracking number), deliver, or cancel with a reason
+- Product management: search, filter by stock or visibility, edit price, discount, stock and category, create new products
+- Customer list with order counts, total spent, and role management
 
-You only need **Node.js 20+**. You don't need MongoDB installed: demo mode starts its own in-memory database, already seeded.
+**Engineering**
+- Security: JWT sessions in httpOnly cookies, bcrypt password hashing, zod validation on every input, rate limiting, Helmet security headers and Content-Security-Policy, and parameterised SQL throughout
+- 22 API tests (Node test runner + supertest) and 8 UI tests (Vitest + Testing Library), run by GitHub Actions CI
+- Responsive layout from phone to desktop
 
-```bash
-npm run install:all     # installs server + client dependencies
-npm run demo            # terminal 1: API on http://localhost:5000
-npm run dev:client      # terminal 2: shop on http://localhost:5173
-```
+## Tech stack
 
-| Log in as | Email                 | Password       |
-| --------- | --------------------- | -------------- |
-| Customer  | `sam@example.com`     | `Customer123!` |
-| Admin     | `admin@fernleaf.test` | `Admin123!`    |
+| Layer | Technology |
+| --- | --- |
+| Frontend | React 19, React Router, Vite, lucide icons, hand-written CSS |
+| Backend | Node.js 24, Express 5, zod, Stripe SDK |
+| Database | SQLite (Node's built-in `node:sqlite`) with an FTS5 full-text index; no native build tools needed |
+| Tests / CI | node:test, supertest, Vitest, Testing Library, GitHub Actions |
+| Deploy | Render blueprint (`render.yaml`) or Docker |
 
-Payments run in sandbox mode. Use card `4242 4242 4242 4242` with any future expiry and any CVC. Card `4000 0000 0000 0002` is always declined, so you can see the failure path. Discount codes to try: `WELCOME10`, `FREESHIP`, and `GREEN5` (£5 off when you spend £30).
+## Running locally
 
-### Running against a real MongoDB
-
-```bash
-cp server/.env.example server/.env   # then set MONGO_URI and JWT_SECRET
-npm run seed                         # wipes the database and loads the demo data
-npm run dev:server                   # API with auto-reload
-npm run dev:client
-```
-
----
-
-## From requirements to features
-
-Each module started from a handful of plain-English requirements. This table shows where each one ended up, and which tests prove it works.
-
-| Module | Requirement (what the customer asked for) | Where it lives | Proved by |
-| --- | --- | --- | --- |
-| **Catalogue** | Browse by category, search, sort by price, see what's in stock | `productController`, `CataloguePage`, `ProductPage` | `products.api.test.js`, `CataloguePage.test.jsx`, `ProductPage.test.jsx` |
-| **Cart** | Add, change quantity, remove; never more than is in stock; always today's price | `cartController`, `CartContext`, `CartPage` | `cart.api.test.js`, `CartPage.test.jsx` |
-| **Checkout** | Delivery address, discount codes, card payment, free delivery over £50 | `checkoutController`, `services/pricing`, `services/payment`, `services/inventory` | `pricing.test.js`, `payment.test.js`, `inventory.test.js`, `checkout.api.test.js`, `CheckoutPage.test.jsx` |
-| **Orders** | Order history, order tracking, cancel before it's packed | `orderController`, `services/orderStatus`, `OrdersPage`, `OrderDetailPage` | `orderStatus.test.js`, `orders.api.test.js`, `Orders.test.jsx` |
-| **Admin** | Add/edit/archive products, move orders through fulfilment, see sales and low stock | `adminController`, `pages/admin/*` | `admin.api.test.js`, `Admin.test.jsx` |
-
-### Non-functional requirements
-
-- **Security:** passwords hashed with bcrypt. JWT auth. Admin routes are role-checked on the server, and nobody can sign themselves up as an admin. Someone else's order returns 404, not 403, so we don't confirm it exists. Helmet headers are on, and regex characters in searches are escaped.
-- **Data integrity:** money is stored as whole pence. Order lines freeze the name and price at the moment of purchase. Products are archived, never deleted, so old orders keep working.
-- **Concurrency:** stock is taken with a conditional `$inc`, so it can never go negative. If any line in a basket fails, the lines already reserved are put back (see `services/inventory.js`).
-- **Resilience:** every error comes back in the same `{ error: { message, details } }` shape, with field-level details the UI shows next to the right input.
-
----
-
-## Architecture
-
-```
-fernleaf/
-├── client/                  React 18 + Vite (the View)
-│   └── src/
-│       ├── api/             fetch wrapper + one function per endpoint
-│       ├── context/         AuthContext, CartContext (shared state)
-│       ├── components/      Header, ProductCard, TotalsTable, …
-│       ├── pages/           one file per screen, admin/ for the back office
-│       └── test/            test helpers (fake providers, fixtures)
-├── server/                  Node.js + Express REST API
-│   ├── src/
-│   │   ├── models/          Mongoose schemas (the Model)
-│   │   ├── controllers/     request handling (the Controller)
-│   │   ├── services/        business rules: pricing, payments, stock, order states
-│   │   ├── middleware/      auth, error handling
-│   │   ├── routes/          URL → controller map
-│   │   └── seed/ dev/       demo data and in-memory demo mode
-│   └── tests/
-│       ├── unit/            pure logic, no database
-│       ├── integration/     services + models against a real (in-memory) MongoDB
-│       └── api/             HTTP tests through the full Express stack
-├── .github/workflows/ci.yml the CI/CD pipeline
-└── render.yaml              deployment blueprint
-```
-
-The controllers stay thin. Rules like "free delivery over £50 after discounts" or "a shipped order can't be cancelled" live in `server/src/services/`. They're plain functions, so they're cheap to unit test and easy to change when requirements move.
-
-In development, Vite proxies `/api` to Express. In production, Express serves the built React app too, so the whole shop deploys as one service.
-
-### REST API
-
-| Method | Endpoint | Auth | |
-| --- | --- | --- | --- |
-| POST | `/api/auth/register`, `/api/auth/login` | – | returns `{ token, user }` |
-| GET | `/api/auth/me` | user | |
-| GET | `/api/products?search=&category=&sort=&minPrice=&maxPrice=&page=&limit=` | – | `sort`: `newest`, `price_asc`, `price_desc`, `name` |
-| GET | `/api/products/categories` | – | counts per category |
-| GET | `/api/products/:slugOrId` | – | |
-| GET / DELETE | `/api/cart` | user | view / empty basket |
-| POST | `/api/cart/items` | user | `{ productId, quantity }` |
-| PATCH / DELETE | `/api/cart/items/:productId` | user | `{ quantity }` (0 removes) |
-| POST | `/api/checkout/quote` | user | `{ discountCode? }` → totals |
-| POST | `/api/checkout` | user | `{ shippingAddress, payment, discountCode? }` |
-| GET | `/api/orders`, `/api/orders/:id` | user | your orders (admins can view any) |
-| POST | `/api/orders/:id/cancel` | user | only while `paid` |
-| GET | `/api/admin/stats` | admin | revenue, status counts, low stock |
-| GET / POST | `/api/admin/products` | admin | |
-| PUT / DELETE | `/api/admin/products/:id` | admin | DELETE archives |
-| GET | `/api/admin/orders?status=` | admin | |
-| PATCH | `/api/admin/orders/:id/status` | admin | `{ status, note? }` |
-
-Order status flow: `paid → packed → shipped → delivered`, and `paid` or `packed` can also go to `cancelled` (stock is returned). The server rejects anything else with a 409.
-
----
-
-## Tests
+Requires **Node.js 22.13 or newer** (24 recommended).
 
 ```bash
-npm test                        # everything
-cd server && npm run test:unit  # or test:integration / test:api / test:coverage
-cd client && npm test           # React Testing Library UI tests
+npm install
+npm run dev          # API on :4000, web app on http://localhost:5173
 ```
 
-| Layer | Tool | What it covers |
+On first start the server creates `server/data/shopverse.db` and loads the full catalogue (about 20 seconds). It also creates the admin account **admin@shopverse.dev / Admin@12345**.
+
+Optional extras:
+
+```bash
+npm run demo         # sample customers, ~120 orders over 60 days and some reviews, so the admin dashboard has data
+npm test             # all server and client tests
+npm run seed         # wipe the catalogue and orders, then reload products from the dataset
+```
+
+Demo customers sign in with e.g. `priya@demo.shopverse.dev` / `Demo12345`.
+
+### Enabling card payments (Stripe test mode)
+
+1. Create a free Stripe account and copy the **test** secret key from <https://dashboard.stripe.com/test/apikeys>.
+2. Copy `.env.example` to `server/.env` and set `STRIPE_SECRET_KEY=sk_test_...`.
+3. Restart the server. "Credit or debit card" becomes available at checkout. Pay with the test card `4242 4242 4242 4242`, any future expiry date and any CVC. Payments are charged in INR.
+
+Webhooks are optional: when the shopper returns from Stripe, the order page asks Stripe for the payment status. For production, add a webhook endpoint at `https://<your-site>/api/payments/webhook` for `checkout.session.completed` and set `STRIPE_WEBHOOK_SECRET`.
+
+## Deploying (make it live)
+
+The server serves the built React app, so the whole store is **one web service**.
+
+### Render (recommended)
+
+1. Push this repository to GitHub.
+2. In Render, choose **New → Blueprint** and select the repository. Render reads `render.yaml`.
+3. Enter an `ADMIN_PASSWORD` (and optionally your Stripe keys) when prompted.
+
+The blueprint uses the Starter plan with a 1 GB persistent disk, so accounts and orders survive restarts. To use the **free** plan instead, delete the `plan` and `disk` blocks and the `DB_PATH` variable. The site still works, but the database resets on every redeploy or restart; the catalogue reloads automatically.
+
+### Docker
+
+```bash
+docker build -t shopverse .
+docker run -p 4000:4000 -v shopverse-data:/data \
+  -e JWT_SECRET=$(openssl rand -hex 32) -e ADMIN_PASSWORD=choose-a-strong-one \
+  -e PUBLIC_URL=http://localhost:4000 shopverse
+```
+
+### Environment variables
+
+| Variable | Required | Purpose |
 | --- | --- | --- |
-| Unit | Jest | Pricing and discount rules, VAT, shipping threshold, card validation (Luhn, expiry), order state machine, helpers |
-| Integration | Jest + mongodb-memory-server | Stock reservation and rollback, a race for the last item, password hashing, slug generation, schema rules |
-| API | Jest + Supertest | Every endpoint across all five modules, including auth, permissions, validation and failure paths (declined card, stock run out, illegal status change) |
-| UI | Vitest + React Testing Library | Every page across all five modules: what the shopper sees, what gets sent to the API, error and empty states |
+| `JWT_SECRET` | production | Signs session cookies |
+| `ADMIN_PASSWORD` / `ADMIN_EMAIL` | production / no | Admin account created on first start |
+| `DB_PATH` | no | SQLite file location (point at a persistent disk) |
+| `STRIPE_SECRET_KEY` | no | Enables card payments |
+| `STRIPE_WEBHOOK_SECRET` | no | Verifies Stripe webhooks |
+| `PUBLIC_URL` | no | Site URL for Stripe redirects (detected automatically on Render) |
+| `USD_TO_INR` | no | Dollar-to-rupee rate used when loading the catalogue (default 85) |
 
-The API and integration tests use a real MongoDB engine that runs in memory. You don't install anything, the tests are isolated from each other, and the results match production behaviour (unique indexes and atomic updates included).
+## The dataset
 
----
+Source: [Amazon Products Dataset 2023 (1.4M products)](https://www.kaggle.com/datasets/asaniczka/amazon-products-dataset-2023-1-4m-products) by asaniczka on Kaggle.
 
-## CI/CD
+`scripts/prepare_dataset.py` reads the 1.4M-row CSV and:
+- groups Amazon's 248 categories into 17 departments (gift cards and a few non-product categories are excluded)
+- keeps the most popular products per category: up to 1,200 in flagship categories such as clothing, shoes, headphones and toys, and 450 elsewhere. Products are ranked by monthly sales, then review count, and only priced, rated items with images are kept.
+- writes `server/data/products.csv.gz` (8.7 MB, committed) and `server/data/catalog.json`
 
-`.github/workflows/ci.yml` runs on every push and every pull request into `main`:
+To rebuild it:
 
-1. **API job**: unit, integration and API tests, plus a coverage report you can download as an artifact.
-2. **UI job**: UI tests, then a production build, so a broken build fails CI too.
-3. **Deploy job**: runs only on `main`, only if both jobs above passed, and only once deployment has been switched on (`DEPLOY_ENABLED`). It triggers a Render deploy, then polls `/api/health` until the new version is live.
+```bash
+pip install kagglehub
+python -c "import kagglehub; print(kagglehub.dataset_download('asaniczka/amazon-products-dataset-2023-1-4m-products'))"
+python scripts/prepare_dataset.py <printed folder>
+npm run seed
+```
 
-### Deployment setup (one time)
+Notes:
+- Images are loaded from Amazon's image CDN (`m.media-amazon.com`) using the URLs in the dataset.
+- The dataset has no stock levels, so each product starts with a generated quantity (about 4% start sold out). From then on, orders and cancellations change stock for real.
+- The dataset is priced in US dollars. When the catalogue is loaded, prices are converted to rupees at **₹85 = $1** (set `USD_TO_INR` to change it, then run `npm run seed`). They are rounded to retail price points ending in 9, so $12.99 becomes ₹1,099. Amounts are stored in paise.
+- Prices are inclusive of GST, so no tax is added at checkout. Delivery is free over ₹499, otherwise ₹40.
 
-1. Create a free MongoDB Atlas cluster and copy its connection string.
-2. On Render, choose **New → Blueprint** and point it at this repo. `render.yaml` sets up the service, and you paste in `MONGO_URI`. `autoDeploy` is off, so Render only deploys when CI tells it to.
-3. In the Render service, go to **Settings → Deploy Hook** and copy the URL.
-4. In GitHub, go to **Settings → Secrets and variables → Actions**:
-   - Secret `RENDER_DEPLOY_HOOK_URL`: the hook URL
-   - Variable `APP_URL`: e.g. `https://fernleaf.onrender.com` (used for the post-deploy health check)
-   - Variable `DEPLOY_ENABLED`: `true`. Until this is set, the deploy job is **skipped** (not failed), so the pipeline stays green while there's nowhere to deploy to.
-5. Add a `production` environment under **Settings → Environments** if you want manual approval before each deploy.
+## Project structure
 
----
+```
+scripts/prepare_dataset.py    Kaggle CSV → compact catalogue
+server/
+  data/                       catalogue files (+ the SQLite database at runtime)
+  src/app.js                  Express app: security middleware, routes, SPA hosting
+  src/db/                     schema, seeding, demo data
+  src/lib/                    order lifecycle and Stripe, pricing, product formatting
+  src/routes/                 auth, catalog, cart, account, orders, reviews, admin
+  test/                       API tests
+client/
+  src/context/                auth, cart (guest + server), wishlist, toasts
+  src/pages/                  storefront pages and pages/admin
+  src/components/             layout, search box, product cards, shared UI
+```
 
-## How we work
+## API overview
 
-The team works in short Scrum sprints with feature branches and pull requests. Every PR needs a passing CI run and a review from someone who didn't write it. See [CONTRIBUTING.md](CONTRIBUTING.md) for the branching model, commit style and review checklist.
+| Method & path | Description |
+| --- | --- |
+| `GET /api/catalog/departments` | Department and category tree with counts |
+| `GET /api/catalog/products?q=&department=&category=&minPrice=&maxPrice=&minRating=&sale=&bestseller=&inStock=&sort=&page=` | Search and browse |
+| `GET /api/catalog/products/suggest?q=` | Autocomplete |
+| `GET /api/catalog/products/:id` | Product details, related products |
+| `GET/PUT/DELETE /api/catalog/products/:id/reviews` | Reviews |
+| `POST /api/auth/register` · `login` · `logout`, `GET /api/auth/me` | Authentication |
+| `GET /api/cart`, `POST /api/cart/items`, `PUT/DELETE /api/cart/items/:id`, `POST /api/cart/preview`, `POST /api/cart/merge` | Cart |
+| `GET/PUT/DELETE /api/account/wishlist/:id`, `GET/POST/PUT/DELETE /api/account/addresses` | Wishlist and addresses |
+| `POST /api/orders`, `GET /api/orders`, `GET /api/orders/:id`, `POST /api/orders/:id/cancel`, `POST /api/orders/:id/pay` | Orders |
+| `GET /api/admin/stats`, `/api/admin/orders`, `/api/admin/products`, `/api/admin/users` | Admin |

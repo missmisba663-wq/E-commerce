@@ -1,47 +1,38 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { authApi, tokenStore } from '../api';
+import { api } from '../api/client.js';
 
-export const AuthContext = createContext(null);
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  // If there's a saved token we don't know who the user is until /me answers, so hold off on redirects.
-  const [loading, setLoading] = useState(() => Boolean(tokenStore.get()));
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!tokenStore.get()) return;
-    authApi
-      .me()
-      .then(({ user: me }) => setUser(me))
-      .catch(() => tokenStore.clear())
+    api.get('/auth/me')
+      .then((d) => setUser(d.user))
+      .catch(() => setUser(null))
       .finally(() => setLoading(false));
   }, []);
 
-  const startSession = useCallback(({ token, user: signedIn }) => {
-    tokenStore.set(token);
-    setUser(signedIn);
-    return signedIn;
+  const login = useCallback(async (email, password) => {
+    const { user: u } = await api.post('/auth/login', { email, password });
+    setUser(u);
+    return u;
   }, []);
 
-  const login = useCallback(
-    async (email, password) => startSession(await authApi.login(email, password)),
-    [startSession]
-  );
+  const register = useCallback(async (fields) => {
+    const { user: u } = await api.post('/auth/register', fields);
+    setUser(u);
+    return u;
+  }, []);
 
-  const register = useCallback(async (details) => startSession(await authApi.register(details)), [startSession]);
-
-  const logout = useCallback(() => {
-    tokenStore.clear();
+  const logout = useCallback(async () => {
+    await api.post('/auth/logout').catch(() => {});
     setUser(null);
   }, []);
 
-  const value = useMemo(() => ({ user, loading, login, register, logout }), [user, loading, login, register, logout]);
-
+  const value = useMemo(() => ({ user, loading, login, register, logout, setUser }), [user, loading, login, register, logout]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used inside <AuthProvider>');
-  return ctx;
-}
+export const useAuth = () => useContext(AuthContext);

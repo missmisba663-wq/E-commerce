@@ -1,40 +1,76 @@
-const fs = require('fs');
-const path = require('path');
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const env = require('./config/env');
-const routes = require('./routes');
-const notFound = require('./middleware/notFound');
-const errorHandler = require('./middleware/errorHandler');
+import fs from 'node:fs';
+import path from 'node:path';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
+import { config } from './config.js';
+import { HttpError, errorHandler } from './lib/http.js';
+import { stripe } from './lib/orders.js';
+import { loadUser } from './middleware/auth.js';
+import accountRoutes from './routes/account.js';
+import adminRoutes from './routes/admin.js';
+import authRoutes from './routes/auth.js';
+import cartRoutes from './routes/cart.js';
+import catalogRoutes from './routes/catalog.js';
+import { ordersRouter, stripeWebhook } from './routes/orders.js';
+import reviewRoutes from './routes/reviews.js';
 
-const app = express();
+export function createApp() {
+  const app = express();
+  app.set('trust proxy', 1);
+  app.disable('x-powered-by');
 
-app.use(
-  helmet({
+  app.use(helmet({
     contentSecurityPolicy: {
       directives: {
-        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'img-src': ["'self'", 'data:', 'https:'],
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https://m.media-amazon.com', 'https:'],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        connectSrc: ["'self'"],
+        formAction: ["'self'", 'https://checkout.stripe.com'],
       },
     },
-  })
-);
-app.use(cors({ origin: env.clientUrl }));
-app.use(express.json({ limit: '100kb' }));
-if (env.nodeEnv !== 'test') app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
+  }));
+  app.use(compression());
+  if (!config.isTest) app.use(morgan(config.isProd ? 'combined' : 'dev'));
 
-app.use('/api', routes);
-app.use('/api', notFound);
+  app.post('/api/payments/webhook', ...stripeWebhook);
 
-// In production the API also serves the built React app, so the whole thing deploys as one service.
-const clientDist = path.join(__dirname, '..', '..', 'client', 'dist');
-if (env.nodeEnv === 'production' && fs.existsSync(clientDist)) {
-  app.use(express.static(clientDist, { maxAge: '7d', index: false }));
-  app.get('*', (req, res) => res.sendFile(path.join(clientDist, 'index.html')));
+  app.use(express.json({ limit: '100kb' }));
+  app.use(cookieParser());
+  app.use('/api', rateLimit({ windowMs: 60_000, limit: config.isTest ? 10_000 : 300, standardHeaders: 'draft-7', legacyHeaders: false }));
+  app.use(loadUser);
+
+  app.get('/api/health', (_req, res) => res.json({ ok: true }));
+  app.get('/api/config', (_req, res) => res.json({
+    cardPayments: Boolean(stripe),
+    currency: config.shop.currency,
+    freeShippingThresholdCents: config.shop.freeShippingThresholdCents,
+    shippingCents: config.shop.shippingCents,
+    taxRate: config.shop.taxRate,
+  }));
+  app.use('/api/auth', authRoutes);
+  app.use('/api/catalog', catalogRoutes);
+  app.use('/api/catalog/products/:productId/reviews', reviewRoutes);
+  app.use('/api/cart', cartRoutes);
+  app.use('/api/account', accountRoutes);
+  app.use('/api/orders', ordersRouter);
+  app.use('/api/admin', adminRoutes);
+  app.use('/api', (_req, _res, next) => next(new HttpError(404, 'API route not found')));
+
+  // In production the built React app is served from the same origin.
+  if (fs.existsSync(config.clientDist)) {
+    app.use(express.static(config.clientDist, { maxAge: '1y', index: false, immutable: true }));
+    app.get('/{*splat}', (_req, res) => {
+      res.setHeader('Cache-Control', 'no-cache');
+      res.sendFile(path.join(config.clientDist, 'index.html'));
+    });
+  }
+
+  app.use(errorHandler);
+  return app;
 }
-
-app.use(errorHandler);
-
-module.exports = app;

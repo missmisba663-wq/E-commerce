@@ -1,109 +1,91 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import ProductImage from '../components/ProductImage';
-import Alert from '../components/Alert';
-import Loading from '../components/Loading';
-import { formatPrice, pluralise } from '../utils/format';
+import { Link, useNavigate } from 'react-router';
+import { AlertTriangle, ShoppingCart, Trash2, Truck } from 'lucide-react';
+import { EmptyState, Price, ProductImage, QuantitySelect, Spinner } from '../components/ui.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
+import { useCart } from '../context/CartContext.jsx';
+import { useToast } from '../context/ToastContext.jsx';
+import { useDocumentTitle } from '../hooks/useApi.js';
+import { formatMoney, productPath } from '../lib/format.js';
+
+export function OrderTotals({ totals, count }) {
+  const toFree = totals.freeShippingThresholdCents - totals.subtotalCents;
+  return (
+    <dl className="totals">
+      <div><dt>Items ({count})</dt><dd>{formatMoney(totals.subtotalCents)}</dd></div>
+      <div><dt>Delivery</dt><dd>{totals.shippingCents ? formatMoney(totals.shippingCents) : <span className="free">FREE</span>}</dd></div>
+      {totals.taxCents > 0 && <div><dt>Estimated tax</dt><dd>{formatMoney(totals.taxCents)}</dd></div>}
+      <div className="totals-grand"><dt>Order total</dt><dd>{formatMoney(totals.totalCents)}</dd></div>
+      {!totals.taxCents && <p className="small muted totals-note">Inclusive of all taxes (GST)</p>}
+      {toFree > 0 && totals.subtotalCents > 0 && (
+        <p className="free-ship-hint"><Truck size={16} /> Add {formatMoney(toFree)} more for FREE delivery</p>
+      )}
+    </dl>
+  );
+}
 
 export default function CartPage() {
-  const { cart, loading, updateItem, removeItem } = useCart();
+  useDocumentTitle('Shopping cart');
+  const { cart, loading, count, update, remove } = useCart();
+  const { user } = useAuth();
+  const { error } = useToast();
   const navigate = useNavigate();
-  const [error, setError] = useState('');
-  const [busyId, setBusyId] = useState(null);
 
-  const run = async (productId, action) => {
-    setError('');
-    setBusyId(productId);
-    try {
-      await action();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setBusyId(null);
-    }
-  };
-
-  if (loading && cart.items.length === 0) return <Loading />;
-
-  if (cart.items.length === 0) {
+  if (loading) return <Spinner block />;
+  if (!cart.items.length) {
     return (
-      <div className="empty-state">
-        <h1>Your basket is empty</h1>
-        <p>
-          Nothing in here yet. <Link to="/">Have a browse</Link>
-        </p>
+      <div className="container">
+        <EmptyState icon={ShoppingCart} title="Your cart is empty" action={<Link to="/" className="btn btn-primary">Start shopping</Link>}>
+          {user ? 'Find something you love among 138,000+ products.' : 'Sign in to see items you added previously, or start shopping.'}
+        </EmptyState>
       </div>
     );
   }
 
-  const blocked = cart.items.some((i) => !i.inStock);
+  const run = (p) => p.catch((e) => error(e.message));
+  const purchasable = cart.items.filter((i) => i.product.inStock);
 
   return (
-    <div className="cart-page">
-      <h1>Your basket</h1>
-      <Alert>{error}</Alert>
-
-      <ul className="cart-lines">
-        {cart.items.map(({ product, quantity, lineTotal, inStock }) => {
-          // Lets the shopper keep a number that's now too high, so they can see it and fix it themselves.
-          const options = Array.from({ length: Math.max(Math.min(product.stock, 10), quantity) }, (_, i) => i + 1);
-          return (
-            <li key={product._id} className="cart-line">
-              {/* Same destination as the name link, so it's hidden from screen readers and skipped by Tab */}
-              <Link to={`/products/${product.slug}`} aria-hidden="true" tabIndex={-1}>
-                <ProductImage product={product} className="thumb" />
-              </Link>
-              <div className="cart-line-info">
-                <Link to={`/products/${product.slug}`} className="cart-line-name">
-                  {product.name}
-                </Link>
-                <span className="muted">{formatPrice(product.price)} each</span>
-                {!inStock && (
-                  <span className="stock-note out">
-                    {product.stock === 0 ? 'Now out of stock' : `Only ${product.stock} available. Please lower the quantity.`}
-                  </span>
-                )}
-              </div>
-              <label className="qty">
-                <span className="visually-hidden">Quantity for {product.name}</span>
-                <select
-                  value={quantity}
-                  disabled={busyId === product._id}
-                  onChange={(e) => run(product._id, () => updateItem(product._id, Number(e.target.value)))}
-                >
-                  {options.map((n) => (
-                    <option key={n} value={n}>
-                      {n}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <span className="line-total">{formatPrice(lineTotal)}</span>
-              <button
-                type="button"
-                className="link-button"
-                disabled={busyId === product._id}
-                onClick={() => run(product._id, () => removeItem(product._id))}
-                aria-label={`Remove ${product.name}`}
-              >
-                Remove
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-
-      <aside className="cart-summary">
-        <div className="summary-row">
-          <span>Subtotal ({pluralise(cart.itemCount, 'item')})</span>
-          <strong data-testid="cart-subtotal">{formatPrice(cart.subtotal)}</strong>
+    <div className="container cart-page">
+      <section className="card cart-items">
+        <div className="cart-head">
+          <h1>Shopping cart</h1>
+          <span className="muted">Price</span>
         </div>
-        <p className="muted">Delivery and any discount codes are added at checkout.</p>
-        <button type="button" className="primary wide" disabled={blocked} onClick={() => navigate('/checkout')}>
-          Go to checkout
+        {cart.warnings.length > 0 && (
+          <div className="alert alert-warning">
+            <AlertTriangle size={18} />
+            <ul>{cart.warnings.map((w) => <li key={w.productId}>{w.message}</li>)}</ul>
+          </div>
+        )}
+        {cart.items.map(({ product, quantity }) => (
+          <article key={product.id} className={`cart-line ${product.inStock ? '' : 'unavailable'}`}>
+            <Link to={productPath(product)} className="cart-line-img"><ProductImage src={product.image} alt="" /></Link>
+            <div className="cart-line-info">
+              <Link to={productPath(product)} className="cart-line-title">{product.title}</Link>
+              <p className={`stock small ${product.inStock ? (product.stock <= 5 ? 'low' : 'ok') : 'out'}`}>
+                {!product.inStock ? 'Out of stock' : product.stock <= 5 ? `Only ${product.stock} left` : 'In stock'}
+              </p>
+              <div className="cart-line-actions">
+                {product.inStock && <QuantitySelect value={quantity} max={product.stock} onChange={(q) => run(update(product.id, q))} />}
+                <button className="link-btn" onClick={() => run(remove(product.id))}><Trash2 size={15} /> Delete</button>
+              </div>
+            </div>
+            <div className="cart-line-price">
+              <Price cents={product.priceCents * quantity} />
+              {quantity > 1 && <span className="muted small">{formatMoney(product.priceCents)} each</span>}
+            </div>
+          </article>
+        ))}
+        <p className="cart-subtotal">Subtotal ({count} {count === 1 ? 'item' : 'items'}): <b>{formatMoney(cart.subtotalCents)}</b></p>
+      </section>
+
+      <aside className="card cart-summary">
+        <OrderTotals totals={cart} count={purchasable.reduce((n, i) => n + i.quantity, 0)} />
+        <button className="btn btn-primary btn-block btn-lg" disabled={!purchasable.length}
+          onClick={() => navigate(user ? '/checkout' : '/login', { state: { from: '/checkout', reason: 'Sign in to check out' } })}>
+          Proceed to checkout
         </button>
-        {blocked && <p className="muted">Sort out the stock issues above before checking out.</p>}
+        {!user && <p className="small muted center">You'll sign in or create an account at checkout. Your cart will be saved.</p>}
       </aside>
     </div>
   );

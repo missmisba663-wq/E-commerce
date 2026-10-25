@@ -1,202 +1,150 @@
 import { useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { checkoutApi } from '../api';
-import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';
-import TotalsTable from '../components/TotalsTable';
-import Alert from '../components/Alert';
-import { formatPrice } from '../utils/format';
-
-const ADDRESS_FIELDS = [
-  { name: 'fullName', label: 'Full name', autoComplete: 'name' },
-  { name: 'line1', label: 'Address line 1', autoComplete: 'address-line1' },
-  { name: 'line2', label: 'Address line 2 (optional)', autoComplete: 'address-line2', optional: true },
-  { name: 'city', label: 'Town or city', autoComplete: 'address-level2' },
-  { name: 'postcode', label: 'Postcode', autoComplete: 'postal-code' },
-];
-
-function Field({ id, label, error, ...inputProps }) {
-  return (
-    <div className="field">
-      <label htmlFor={id}>{label}</label>
-      <input id={id} aria-invalid={Boolean(error)} aria-describedby={error ? `${id}-error` : undefined} {...inputProps} />
-      {error && (
-        <span className="field-error" id={`${id}-error`}>
-          {error}
-        </span>
-      )}
-    </div>
-  );
-}
+import { Link, Navigate, useNavigate } from 'react-router';
+import { Banknote, CreditCard, Lock, MapPin, Plus } from 'lucide-react';
+import { api } from '../api/client.js';
+import AddressForm from '../components/AddressForm.jsx';
+import { ProductImage, Spinner } from '../components/ui.jsx';
+import { useCart } from '../context/CartContext.jsx';
+import { useShop } from '../context/ShopContext.jsx';
+import { useToast } from '../context/ToastContext.jsx';
+import { useApi, useDocumentTitle } from '../hooks/useApi.js';
+import { formatMoney } from '../lib/format.js';
+import { OrderTotals } from './CartPage.jsx';
 
 export default function CheckoutPage() {
-  const { user } = useAuth();
-  const { cart, reset } = useCart();
+  useDocumentTitle('Checkout');
+  const { cart, loading, refresh } = useCart();
+  const { config } = useShop();
+  const { error } = useToast();
   const navigate = useNavigate();
-
-  const [address, setAddress] = useState({ fullName: user?.name || '', line1: '', line2: '', city: '', postcode: '' });
-  const [card, setCard] = useState({ cardNumber: '', expiry: '', cvc: '' });
-  const [codeInput, setCodeInput] = useState('');
-  const [appliedCode, setAppliedCode] = useState('');
-  const [quote, setQuote] = useState(null);
-  const [codeError, setCodeError] = useState('');
-  const [error, setError] = useState('');
-  const [fieldErrors, setFieldErrors] = useState({});
+  const addresses = useApi('/account/addresses');
+  const [addressId, setAddressId] = useState(null);
+  const [adding, setAdding] = useState(false);
+  const [payment, setPayment] = useState('cod');
   const [placing, setPlacing] = useState(false);
+  const [problem, setProblem] = useState(null);
+
+  const list = addresses.data?.addresses || [];
+  useEffect(() => {
+    if (addresses.data && !addressId) {
+      if (list.length) setAddressId(list[0].id);
+      else setAdding(true);
+    }
+  }, [addresses.data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (cart.items.length === 0) return;
-    checkoutApi
-      .quote()
-      .then((res) => setQuote(res.totals))
-      .catch((err) => setError(err.message));
-    // We only want the opening quote here. Applying a code fetches its own quote later.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (config?.cardPayments) setPayment('card');
+  }, [config?.cardPayments]);
 
-  if (cart.items.length === 0 && !placing) return <Navigate to="/cart" replace />;
+  if (loading || addresses.loading) return <Spinner block />;
+  const items = cart.items.filter((i) => i.product.inStock);
+  if (!items.length && !placing) return <Navigate to="/cart" replace />;
 
-  const applyCode = async (event) => {
-    event.preventDefault();
-    setCodeError('');
-    try {
-      const res = await checkoutApi.quote(codeInput.trim());
-      setQuote(res.totals);
-      setAppliedCode(res.totals.discountCode || '');
-    } catch (err) {
-      setCodeError(err.message);
-    }
-  };
+  async function saveAddress(a) {
+    const res = await api.post('/account/addresses', a);
+    addresses.setData({ addresses: res.addresses });
+    setAddressId(res.id);
+    setAdding(false);
+  }
 
-  const removeCode = async () => {
-    setAppliedCode('');
-    setCodeInput('');
-    const res = await checkoutApi.quote();
-    setQuote(res.totals);
-  };
-
-  const placeOrder = async (event) => {
-    event.preventDefault();
-    setError('');
-    setFieldErrors({});
+  async function placeOrder() {
     setPlacing(true);
+    setProblem(null);
     try {
-      const { order } = await checkoutApi.placeOrder({
-        shippingAddress: address,
-        discountCode: appliedCode || undefined,
-        payment: card,
-      });
-      reset();
-      navigate(`/orders/${order._id}?placed=1`, { replace: true });
-    } catch (err) {
-      setError(err.message);
-      setFieldErrors(err.fieldErrors || {});
+      const { order, checkoutUrl } = await api.post('/orders', { addressId, paymentMethod: payment });
+      if (checkoutUrl) {
+        window.location.assign(checkoutUrl);
+        return;
+      }
+      await refresh();
+      navigate(`/orders/${order.id}?placed=1`, { replace: true });
+    } catch (e) {
+      setProblem(e.message);
+      if (e.status === 409) refresh();
+      else error(e.message);
       setPlacing(false);
     }
-  };
+  }
+
+  const count = items.reduce((n, i) => n + i.quantity, 0);
+  const selected = list.find((a) => a.id === addressId);
 
   return (
-    <div className="checkout-page">
-      <h1>Checkout</h1>
-
-      <form className="checkout-form" onSubmit={placeOrder} noValidate>
-        <section>
-          <h2>Delivery address</h2>
-          {ADDRESS_FIELDS.map((f) => (
-            <Field
-              key={f.name}
-              id={f.name}
-              label={f.label}
-              autoComplete={f.autoComplete}
-              required={!f.optional}
-              value={address[f.name]}
-              error={fieldErrors[`shippingAddress.${f.name}`]}
-              onChange={(e) => setAddress({ ...address, [f.name]: e.target.value })}
-            />
-          ))}
-          <p className="muted">We currently deliver within the UK only.</p>
-        </section>
-
-        <section>
-          <h2>Payment</h2>
-          <p className="sandbox-note">
-            This is a demo shop, so no real money moves. Use card <code>4242 4242 4242 4242</code> with any future
-            expiry and any CVC. Card <code>4000 0000 0000 0002</code> will be declined.
-          </p>
-          <Field
-            id="cardNumber"
-            label="Card number"
-            inputMode="numeric"
-            autoComplete="cc-number"
-            value={card.cardNumber}
-            error={fieldErrors['payment.cardNumber']}
-            onChange={(e) => setCard({ ...card, cardNumber: e.target.value })}
-          />
-          <div className="field-row">
-            <Field
-              id="expiry"
-              label="Expiry (MM/YY)"
-              autoComplete="cc-exp"
-              placeholder="MM/YY"
-              value={card.expiry}
-              error={fieldErrors['payment.expiry']}
-              onChange={(e) => setCard({ ...card, expiry: e.target.value })}
-            />
-            <Field
-              id="cvc"
-              label="CVC"
-              inputMode="numeric"
-              autoComplete="cc-csc"
-              value={card.cvc}
-              error={fieldErrors['payment.cvc']}
-              onChange={(e) => setCard({ ...card, cvc: e.target.value })}
-            />
-          </div>
-        </section>
-
-        <aside className="checkout-summary">
-          <h2>Order summary</h2>
-          <ul className="summary-lines">
-            {cart.items.map(({ product, quantity, lineTotal }) => (
-              <li key={product._id}>
-                <span>
-                  {quantity} × {product.name}
-                </span>
-                <span>{formatPrice(lineTotal)}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="discount-form">
-            {appliedCode ? (
-              <p>
-                Code <strong>{appliedCode}</strong> applied.{' '}
-                <button type="button" className="link-button" onClick={removeCode}>
-                  Remove
-                </button>
-              </p>
-            ) : (
-              <>
-                <label htmlFor="discountCode">Discount code</label>
-                <div className="search-row">
-                  <input id="discountCode" value={codeInput} onChange={(e) => setCodeInput(e.target.value)} />
-                  <button type="button" onClick={applyCode} disabled={!codeInput.trim()}>
-                    Apply
-                  </button>
-                </div>
-                {codeError && <span className="field-error">{codeError}</span>}
-              </>
+    <div className="container checkout">
+      <h1>Checkout <span className="muted">({count} {count === 1 ? 'item' : 'items'})</span></h1>
+      <div className="checkout-grid">
+        <div className="checkout-steps">
+          <section className="card step">
+            <h2><span className="step-num">1</span> Delivery address</h2>
+            {list.length > 0 && !adding && (
+              <div className="address-options">
+                {list.map((a) => (
+                  <label key={a.id} className={`address-option ${a.id === addressId ? 'selected' : ''}`}>
+                    <input type="radio" name="address" checked={a.id === addressId} onChange={() => setAddressId(a.id)} />
+                    <span>
+                      <b>{a.fullName}</b> {a.isDefault && <span className="badge">Default</span>}<br />
+                      {a.line1}{a.line2 && `, ${a.line2}`}, {a.city}, {a.state} {a.postalCode}, {a.country}<br />
+                      <span className="muted">Phone: {a.phone}</span>
+                    </span>
+                  </label>
+                ))}
+                <button className="link-btn" onClick={() => setAdding(true)}><Plus size={16} /> Add a new address</button>
+              </div>
             )}
-          </div>
+            {adding && (
+              <AddressForm onSubmit={saveAddress} submitLabel="Use this address" onCancel={list.length ? () => setAdding(false) : undefined} />
+            )}
+          </section>
 
-          <TotalsTable totals={quote} discountCode={appliedCode} />
-          <Alert>{error}</Alert>
+          <section className="card step">
+            <h2><span className="step-num">2</span> Payment method</h2>
+            <div className="payment-options">
+              <label className={`payment-option ${payment === 'card' ? 'selected' : ''} ${config?.cardPayments ? '' : 'disabled'}`}>
+                <input type="radio" name="payment" value="card" checked={payment === 'card'} disabled={!config?.cardPayments} onChange={() => setPayment('card')} />
+                <CreditCard size={22} />
+                <span>
+                  <b>Credit or debit card</b><br />
+                  <span className="muted small">
+                    {config?.cardPayments ? 'Pay securely on Stripe Checkout. Visa, Mastercard, RuPay and more.' : 'Card payments are not enabled on this store yet.'}
+                  </span>
+                </span>
+              </label>
+              <label className={`payment-option ${payment === 'cod' ? 'selected' : ''}`}>
+                <input type="radio" name="payment" value="cod" checked={payment === 'cod'} onChange={() => setPayment('cod')} />
+                <Banknote size={22} />
+                <span><b>Cash on delivery</b><br /><span className="muted small">Pay when your order arrives.</span></span>
+              </label>
+            </div>
+          </section>
 
-          <button type="submit" className="primary wide" disabled={placing || !quote}>
-            {placing ? 'Placing order…' : quote ? `Pay ${formatPrice(quote.total)}` : 'Pay'}
+          <section className="card step">
+            <h2><span className="step-num">3</span> Review items</h2>
+            <ul className="review-items">
+              {items.map(({ product, quantity }) => (
+                <li key={product.id}>
+                  <ProductImage src={product.image} alt="" />
+                  <span className="review-item-title">{product.title}</span>
+                  <span className="muted">× {Math.min(quantity, product.stock)}</span>
+                  <b>{formatMoney(product.priceCents * Math.min(quantity, product.stock))}</b>
+                </li>
+              ))}
+            </ul>
+            <Link to="/cart" className="link small">Change quantities in your cart</Link>
+          </section>
+        </div>
+
+        <aside className="card checkout-summary">
+          {problem && <div className="alert alert-error">{problem}</div>}
+          <button className="btn btn-primary btn-block btn-lg" onClick={placeOrder} disabled={placing || !selected || adding}>
+            <Lock size={18} /> {placing ? 'Placing your order…' : payment === 'card' ? 'Continue to payment' : 'Place your order'}
           </button>
+          {selected && (
+            <p className="small muted ship-to"><MapPin size={14} /> Delivering to {selected.fullName}, {selected.city}</p>
+          )}
+          <OrderTotals totals={cart} count={count} />
+          <p className="small muted">By placing your order you agree to ShopVerse's conditions of use. You can cancel any time before your order ships.</p>
         </aside>
-      </form>
+      </div>
     </div>
   );
 }

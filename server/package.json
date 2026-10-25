@@ -1,47 +1,31 @@
 {
-  "name": "fernleaf-server",
-  "version": "1.0.0",
+  "name": "shopverse-server",
   "private": true,
-  "description": "REST API for the Fernleaf plant shop",
-  "main": "src/server.js",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
-    "seed": "node src/seed/seed.js",
-    "demo": "node src/dev/demo.js",
-    "test": "jest --runInBand",
-    "test:unit": "jest tests/unit",
-    "test:integration": "jest --runInBand tests/integration",
-    "test:api": "jest --runInBand tests/api",
-    "test:coverage": "jest --runInBand --coverage"
-  },
-  "engines": {
-    "node": ">=20"
+    "dev": "node --disable-warning=ExperimentalWarning --watch src/index.js",
+    "start": "node --disable-warning=ExperimentalWarning src/index.js",
+    "seed": "node --disable-warning=ExperimentalWarning src/db/seed.js",
+    "test": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 \"test/**/*.test.js\"",
+    "demo": "node --disable-warning=ExperimentalWarning src/db/demo.js"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "helmet": "^8.0.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.9.0",
-    "morgan": "^1.10.0"
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.2",
+    "cookie-parser": "^1.4.7",
+    "csv-parse": "^7.0.3",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.12.1",
+    "stripe": "^23.0.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "mongodb-memory-server": "^10.1.2",
-    "nodemon": "^3.1.9",
-    "supertest": "^7.0.0"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "testTimeout": 60000,
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/src/seed/",
-      "/src/dev/",
-      "/tests/"
-    ]
+    "supertest": "^7.3.1"
   }
 }

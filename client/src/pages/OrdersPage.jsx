@@ -1,52 +1,54 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ordersApi } from '../api';
-import StatusBadge from '../components/StatusBadge';
-import Loading from '../components/Loading';
-import Alert from '../components/Alert';
-import { formatDate, formatPrice, pluralise } from '../utils/format';
+import { useState } from 'react';
+import { Link } from 'react-router';
+import { Package } from 'lucide-react';
+import { EmptyState, ErrorState, Pagination, ProductImage, Spinner, StatusBadge } from '../components/ui.jsx';
+import { useApi, useDocumentTitle } from '../hooks/useApi.js';
+import { formatDate, formatMoney } from '../lib/format.js';
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState(null);
-  const [error, setError] = useState('');
+  useDocumentTitle('Your orders');
+  const [page, setPage] = useState(1);
+  const { data, error, loading, reload } = useApi(`/orders?page=${page}`);
 
-  useEffect(() => {
-    ordersApi
-      .list()
-      .then((res) => setOrders(res.orders))
-      .catch((err) => setError(err.message));
-  }, []);
-
-  if (error) return <Alert>{error}</Alert>;
-  if (!orders) return <Loading />;
-
-  if (orders.length === 0) {
+  if (loading && !data) return <Spinner block />;
+  if (error) return <div className="container"><ErrorState error={error} onRetry={reload} /></div>;
+  if (!data.orders.length) {
     return (
-      <div className="empty-state">
-        <h1>No orders yet</h1>
-        <p>
-          When you place an order it'll show up here. <Link to="/">Start shopping</Link>
-        </p>
+      <div className="container">
+        <EmptyState icon={Package} title="No orders yet" action={<Link to="/" className="btn btn-primary">Start shopping</Link>}>
+          When you place an order, you can track it here.
+        </EmptyState>
       </div>
     );
   }
 
   return (
-    <div className="orders-page">
-      <h1>My orders</h1>
-      <ul className="order-list">
-        {orders.map((order) => (
-          <li key={order._id}>
-            <Link to={`/orders/${order._id}`} className="order-row">
-              <span className="order-number">{order.orderNumber}</span>
-              <span className="muted">{formatDate(order.createdAt)}</span>
-              <span>{pluralise(order.items.reduce((n, i) => n + i.quantity, 0), 'item')}</span>
-              <span>{formatPrice(order.totals.total)}</span>
-              <StatusBadge status={order.status} />
-            </Link>
-          </li>
+    <div className="container narrow">
+      <h1>Your orders</h1>
+      <p className="muted">{data.total} {data.total === 1 ? 'order' : 'orders'} placed</p>
+      <div className="order-list">
+        {data.orders.map((o) => (
+          <article key={o.id} className="card order-card">
+            <header className="order-card-head">
+              <div><small>ORDER PLACED</small>{formatDate(o.createdAt)}</div>
+              <div><small>TOTAL</small>{formatMoney(o.totalCents)}</div>
+              <div><small>PAYMENT</small>{o.paymentMethod === 'cod' ? 'Cash on delivery' : 'Card'}</div>
+              <div className="order-card-num"><small>ORDER # {o.number}</small><Link to={`/orders/${o.id}`}>View order details</Link></div>
+            </header>
+            <div className="order-card-body">
+              <div>
+                <StatusBadge status={o.status} label={o.statusLabel} />
+                <p className="small muted">{o.itemCount} {o.itemCount === 1 ? 'item' : 'items'}</p>
+              </div>
+              <div className="order-thumbs">
+                {o.previewItems.map((i, idx) => <ProductImage key={idx} src={i.image} alt={i.title} />)}
+              </div>
+              <Link to={`/orders/${o.id}`} className="btn btn-secondary btn-sm">Track order</Link>
+            </div>
+          </article>
         ))}
-      </ul>
+      </div>
+      <Pagination page={data.page} pages={data.pages} onChange={setPage} />
     </div>
   );
 }

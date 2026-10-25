@@ -1,10 +1,10 @@
 node_modules/
-dist/
-coverage/
+client/dist/
+server/data/*.db
+server/data/*.db-*
 .env
-.env.local
+.env.*
+!.env.example
 *.log
 .DS_Store
-Thumbs.db
-.vscode/*
-!.vscode/extensions.json
+coverage/

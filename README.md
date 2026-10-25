@@ -74,7 +74,18 @@ The server serves the built React app, so the whole store is **one web service**
 2. In Render, choose **New → Blueprint** and select the repository. Render reads `render.yaml`.
 3. Enter an `ADMIN_PASSWORD` (and optionally your Stripe keys) when prompted.
 
-The blueprint uses the Starter plan with a 1 GB persistent disk, so accounts and orders survive restarts. To use the **free** plan instead, delete the `plan` and `disk` blocks and the `DB_PATH` variable. The site still works, but the database resets on every redeploy or restart; the catalogue reloads automatically.
+The blueprint uses Render's **free** plan. The product catalogue is loaded during the build, so the site starts quickly. Two things to know about the free plan:
+- The site goes to sleep after about 15 minutes without visitors. The next visit wakes it, which takes up to a minute.
+- Accounts, carts and orders are stored on temporary disk, so they reset whenever the service restarts, sleeps or is redeployed. The products and the admin account come back automatically.
+
+To keep accounts and orders permanently, switch to a paid plan with a persistent disk: in `render.yaml` set `plan: starter`, add a `DB_PATH` variable with the value `/var/data/shopverse.db`, and add a disk:
+
+```yaml
+    disk:
+      name: shopverse-data
+      mountPath: /var/data
+      sizeGB: 1
+```
 
 ### Docker
 

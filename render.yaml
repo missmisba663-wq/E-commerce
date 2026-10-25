@@ -1,10 +1,12 @@
 # One-click deploy on Render: New > Blueprint > select this repo.
+# Free plan: the product catalogue is loaded during the build, so the site starts instantly.
+# Accounts and orders live on the instance's temporary disk and reset on every restart or redeploy.
 services:
   - type: web
     name: shopverse
     runtime: node
-    plan: starter            # a persistent disk needs a paid plan; see README for the free option
-    buildCommand: npm ci && npm run build
+    plan: free
+    buildCommand: npm ci && npm run build && npm run seed
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
@@ -22,9 +24,3 @@ services:
         sync: false
       - key: STRIPE_WEBHOOK_SECRET
         sync: false
-      - key: DB_PATH
-        value: /var/data/shopverse.db
-    disk:
-      name: shopverse-data
-      mountPath: /var/data
-      sizeGB: 1
